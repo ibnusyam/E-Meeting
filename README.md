@@ -1,9 +1,3 @@
-# Skema Database Aplikasi Pemesanan Ruangan
-
-Selamat datang di repositori skema database untuk aplikasi pemesanan ruangan. Proyek ini berisi file-file SQL yang dibutuhkan untuk membuat dan mengisi struktur database untuk sistem manajemen pemesanan ruangan kantor.
-
-## Struktur Tabel
-
 Database ini terdiri dari lima tabel utama yang saling berhubungan untuk mengelola data departemen, karyawan, ruangan, admin, dan transaksi pemesanan.
 
 ### 🏢 `Departemen`
