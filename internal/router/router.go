@@ -6,10 +6,14 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func NewRouter() *echo.Echo {
+// Ubah fungsi agar menerima SnackHandler
+func NewRouter(snackHandler *http.SnackHandler) *echo.Echo {
 	e := echo.New()
 
 	e.GET("/", http.HomeHandler)
+
+	// Daftarkan method dari instance handler, bukan fungsi biasa
+	e.GET("/snacks", snackHandler.GetAllSnacks)
 
 	return e
 }
