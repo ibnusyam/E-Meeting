@@ -1,0 +1,38 @@
+basePath: ini
+definitions:
+  model.Snack:
+    properties:
+      category:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      price:
+        type: number
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Ini adalah API server untuk aplikasi E-Meeting.
+  title: E-Meeting API
+  version: "1.0"
+paths:
+  /snacks:
+    get:
+      consumes:
+      - application/json
+      description: Mengambil seluruh daftar snack yang tersedia
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Snack'
+            type: array
+      summary: Mendapatkan semua data snack
+      tags:
+      - Snacks
+swagger: "2.0"
