@@ -27,7 +27,7 @@ Sebelum memulai, pastikan Anda sudah menginstal perangkat lunak berikut:
 1.  **Clone Repositori**
     ```bash
     git clone [https://github.com/NAMA_USER_ANDA/NAMA_REPO_ANDA.git](https://github.com/NAMA_USER_ANDA/NAMA_REPO_ANDA.git)
-    cd NAMA_REPO_ANDA
+    cd E-Meeting
     ```
 
 2.  **Siapkan Database**
@@ -46,15 +46,12 @@ Sebelum memulai, pastikan Anda sudah menginstal perangkat lunak berikut:
         go mod tidy
         ```
 
-5.  **Jalankan Migrasi Database**
-    -   Perintah ini akan membuat semua tabel yang dibutuhkan di database Anda.
+        install migrate cli untuk dapat bisa melakukan migrate ke database 
         ```bash
-        # Pastikan Anda sudah menginstal migrate CLI
-        migrate -database "postgres://USER:PASSWORD@HOST:PORT/DBNAME?sslmode=disable" -path migration up
+        go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
         ```
-    -   *Ganti `USER`, `PASSWORD`, `HOST`, `PORT`, `DBNAME` dengan konfigurasi Anda.*
 
-6.  **Isi Data Awal (Seeding)**
+5.  **Buat migrasi dan seeding untuk awal (Seeding)**
     -   Jalankan perintah ini untuk mengisi database dengan data contoh.
         ```bash
         go run main.go --seed
