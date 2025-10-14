@@ -8,7 +8,12 @@ import (
 	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
-func SetupRoutes(e *echo.Echo, snackHandler *handler.SnackHandler) {
+type Handlers struct {
+	SnackHandler *handler.SnackHandler
+	//tambahin buat handerl lain
+}
+
+func SetupRoutes(e *echo.Echo, h *Handlers) {
 	// Route untuk health check
 	e.GET("/", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, map[string]string{"message": "API E-Meeting is running!"})
@@ -16,5 +21,5 @@ func SetupRoutes(e *echo.Echo, snackHandler *handler.SnackHandler) {
 
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
-	e.GET("/snacks", snackHandler.GetAllSnacks)
+	e.GET("/snacks", h.SnackHandler.GetAllSnacks)
 }

@@ -60,15 +60,20 @@ func main() {
 		return
 	}
 
-	// jalanin snack
+	// ambil data snack
 	snackRepo := repository.NewSnackRepository(db)
 	snackService := service.NewSnackService(snackRepo)
 	snackHandler := handler.NewSnackHandler(snackService)
 
+	allHandlers := &route.Handlers{
+		SnackHandler: snackHandler,
+		// handler lain di sini
+	}
+
 	// jalanin server
 	e := echo.New()
 
-	route.SetupRoutes(e, snackHandler)
+	route.SetupRoutes(e, allHandlers)
 
 	log.Println("🚀 Server berjalan di http://localhost:8080")
 	log.Println("📚 Dokumentasi Swagger tersedia di http://localhost:8080/swagger/index.html")
