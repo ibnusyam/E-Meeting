@@ -23,7 +23,7 @@ import (
 // @version 1.0
 // @description Ini adalah API server untuk aplikasi E-Meeting.
 // @host localhost:8080
-// @BasePath ini
+// @BasePath
 func main() {
 	err := godotenv.Load()
 	if err != nil {
@@ -65,8 +65,14 @@ func main() {
 	snackService := service.NewSnackService(snackRepo)
 	snackHandler := handler.NewSnackHandler(snackService)
 
+	// ambil data user
+	userRepo := repository.NewUserRepository(db)
+	userService := service.NewUserService(userRepo)
+	userHandler := handler.NewUserHandler(userService)
+
 	allHandlers := &route.Handlers{
 		SnackHandler: snackHandler,
+		UserHandler:  userHandler,
 		// handler lain di sini
 	}
 
@@ -77,6 +83,7 @@ func main() {
 
 	log.Println("🚀 Server berjalan di http://localhost:8080")
 	log.Println("📚 Dokumentasi Swagger tersedia di http://localhost:8080/swagger/index.html")
+
 	if err := e.Start(":8080"); err != nil {
 		log.Fatalf("Gagal menjalankan server: %v", err)
 	}
