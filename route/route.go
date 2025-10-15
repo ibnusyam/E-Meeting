@@ -11,6 +11,7 @@ import (
 type Handlers struct {
 	SnackHandler *handler.SnackHandler
 	//tambahin buat handerl lain
+	UserHandler *handler.UserHandler
 }
 
 func SetupRoutes(e *echo.Echo, h *Handlers) {
@@ -20,6 +21,7 @@ func SetupRoutes(e *echo.Echo, h *Handlers) {
 	})
 
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
+	e.POST("/register", h.UserHandler.Register)
 
 	e.GET("/snacks", h.SnackHandler.GetAllSnacks)
 }
