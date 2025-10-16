@@ -61,6 +61,45 @@ paths:
       summary: Register user baru
       tags:
       - Register
+  /rooms:
+    get:
+      consumes:
+      - application/json
+      description: Mengambil seluruh daftar room yang tersedia dengan filter dan pagination
+      parameters:
+      - description: Nama ruangan
+        in: query
+        name: name
+        type: string
+      - description: Tipe ruangan
+        in: query
+        name: type
+        type: string
+      - description: Kapasitas minimal
+        in: query
+        name: capacity
+        type: integer
+      - default: 1
+        description: Nomor halaman
+        in: query
+        name: page
+        type: integer
+      - default: 20
+        description: Jumlah data per halaman
+        in: query
+        name: pageSize
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Mendapatkan semua data room
+      tags:
+      - Rooms
   /snacks:
     get:
       consumes:

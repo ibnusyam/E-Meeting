@@ -64,6 +64,64 @@ const docTemplate = `{
                 }
             }
         },
+        "/rooms": {
+            "get": {
+                "description": "Mengambil seluruh daftar room yang tersedia dengan filter dan pagination",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rooms"
+                ],
+                "summary": "Mendapatkan semua data room",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Nama ruangan",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Tipe ruangan",
+                        "name": "type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Kapasitas minimal",
+                        "name": "capacity",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Nomor halaman",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 20,
+                        "description": "Jumlah data per halaman",
+                        "name": "pageSize",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
         "/snacks": {
             "get": {
                 "description": "Mengambil seluruh daftar snack yang tersedia",

@@ -70,9 +70,15 @@ func main() {
 	userService := service.NewUserService(userRepo)
 	userHandler := handler.NewUserHandler(userService)
 
+	// ambil data room
+	roomRepo := repository.NewRoomRepository(db)
+	roomService := service.NewRoomService(roomRepo)
+	roomHandler := handler.NewRoomHandler(roomService)
+
 	allHandlers := &route.Handlers{
 		SnackHandler: snackHandler,
 		UserHandler:  userHandler,
+		RoomHandler:  roomHandler,
 		// handler lain di sini
 	}
 
