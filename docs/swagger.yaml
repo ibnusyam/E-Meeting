@@ -1,5 +1,28 @@
 basePath: ini
 definitions:
+  model.ProfileUser:
+    properties:
+      createdAt:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      imageURL:
+        type: string
+      language:
+        type: string
+      phone_number:
+        type: string
+      role:
+        type: string
+      status_user:
+        type: string
+      updatedAt:
+        type: string
+      username:
+        type: string
+    type: object
   model.Snack:
     properties:
       category:
@@ -18,6 +41,23 @@ info:
   title: E-Meeting API
   version: "1.0"
 paths:
+  /profile/:id:
+    get:
+      consumes:
+      - application/json
+      description: Mengambil data profile berdasarkan id
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.ProfileUser'
+            type: array
+      summary: Mendapatkan data profile
+      tags:
+      - Profile
   /snacks:
     get:
       consumes:
