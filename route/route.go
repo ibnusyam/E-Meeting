@@ -2,6 +2,7 @@ package route
 
 import (
 	"E-Meeting/handler"
+	"database/sql"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -9,8 +10,9 @@ import (
 )
 
 type Handlers struct {
-	SnackHandler *handler.SnackHandler
-	//tambahin buat handerl lain
+	SnackHandler   *handler.SnackHandler
+	ProfileHandler *handler.ProfileHandler
+	DB             *sql.DB
 }
 
 func SetupRoutes(e *echo.Echo, h *Handlers) {
@@ -22,4 +24,6 @@ func SetupRoutes(e *echo.Echo, h *Handlers) {
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
 	e.GET("/snacks", h.SnackHandler.GetAllSnacks)
+
+	e.GET("/profile/:id", h.ProfileHandler.GetUserProfileByID)
 }

@@ -65,8 +65,13 @@ func main() {
 	snackService := service.NewSnackService(snackRepo)
 	snackHandler := handler.NewSnackHandler(snackService)
 
+	profileRepo := repository.NewProfileRepository(db)
+	profileService := service.NewProfileService(profileRepo)
+	profileHandler := handler.NewProfileHandler(profileService)
+
 	allHandlers := &route.Handlers{
-		SnackHandler: snackHandler,
+		SnackHandler:   snackHandler,
+		ProfileHandler: profileHandler,
 		// handler lain di sini
 	}
 
