@@ -1,5 +1,13 @@
-basePath: ini
 definitions:
+<<<<<<< HEAD
+  handler.RegisterRequest:
+    properties:
+      confirmPassword:
+        type: string
+      email:
+        type: string
+      password:
+=======
   model.ProfileUser:
     properties:
       createdAt:
@@ -19,6 +27,7 @@ definitions:
       status_user:
         type: string
       updatedAt:
+>>>>>>> 7c7980a14e2503cceb4b31c0153c22e4eb81de30
         type: string
       username:
         type: string
@@ -41,23 +50,95 @@ info:
   title: E-Meeting API
   version: "1.0"
 paths:
+<<<<<<< HEAD
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Register user baru
+      parameters:
+      - description: Register Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Register Success
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Register user baru
+      tags:
+      - Register
+  /rooms:
+    get:
+      consumes:
+      - application/json
+      description: Mengambil seluruh daftar room yang tersedia dengan filter dan pagination
+      parameters:
+      - description: Nama ruangan
+        in: query
+        name: name
+        type: string
+      - description: Tipe ruangan
+        in: query
+        name: type
+        type: string
+      - description: Kapasitas minimal
+        in: query
+        name: capacity
+        type: integer
+      - default: 1
+        description: Nomor halaman
+        in: query
+        name: page
+        type: integer
+      - default: 20
+        description: Jumlah data per halaman
+        in: query
+        name: pageSize
+        type: integer
+=======
   /profile/:id:
     get:
       consumes:
       - application/json
       description: Mengambil data profile berdasarkan id
+>>>>>>> 7c7980a14e2503cceb4b31c0153c22e4eb81de30
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
+<<<<<<< HEAD
+            additionalProperties: true
+            type: object
+      summary: Mendapatkan semua data room
+      tags:
+      - Rooms
+=======
             items:
               $ref: '#/definitions/model.ProfileUser'
             type: array
       summary: Mendapatkan data profile
       tags:
       - Profile
+>>>>>>> 7c7980a14e2503cceb4b31c0153c22e4eb81de30
   /snacks:
     get:
       consumes:

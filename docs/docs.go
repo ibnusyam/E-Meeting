@@ -15,32 +15,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/profile/:id": {
-            "get": {
-                "description": "Mengambil data profile berdasarkan id",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Profile"
-                ],
-                "summary": "Mendapatkan data profile",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/model.ProfileUser"
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/snacks": {
             "get": {
                 "description": "Mengambil seluruh daftar snack yang tersedia",
@@ -69,41 +43,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "model.ProfileUser": {
-            "type": "object",
-            "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "imageURL": {
-                    "type": "string"
-                },
-                "language": {
-                    "type": "string"
-                },
-                "phone_number": {
-                    "type": "string"
-                },
-                "role": {
-                    "type": "string"
-                },
-                "status_user": {
-                    "type": "string"
-                },
-                "updatedAt": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
         "model.Snack": {
             "type": "object",
             "properties": {
@@ -128,7 +67,7 @@ const docTemplate = `{
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "localhost:8080",
-	BasePath:         "ini",
+	BasePath:         "",
 	Schemes:          []string{},
 	Title:            "E-Meeting API",
 	Description:      "Ini adalah API server untuk aplikasi E-Meeting.",
