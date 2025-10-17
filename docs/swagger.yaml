@@ -1,4 +1,5 @@
 definitions:
+<<<<<<< HEAD
   handler.RegisterRequest:
     properties:
       confirmPassword:
@@ -6,6 +7,27 @@ definitions:
       email:
         type: string
       password:
+=======
+  model.ProfileUser:
+    properties:
+      createdAt:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      imageURL:
+        type: string
+      language:
+        type: string
+      phone_number:
+        type: string
+      role:
+        type: string
+      status_user:
+        type: string
+      updatedAt:
+>>>>>>> 7c7980a14e2503cceb4b31c0153c22e4eb81de30
         type: string
       username:
         type: string
@@ -28,6 +50,7 @@ info:
   title: E-Meeting API
   version: "1.0"
 paths:
+<<<<<<< HEAD
   /register:
     post:
       consumes:
@@ -89,17 +112,33 @@ paths:
         in: query
         name: pageSize
         type: integer
+=======
+  /profile/:id:
+    get:
+      consumes:
+      - application/json
+      description: Mengambil data profile berdasarkan id
+>>>>>>> 7c7980a14e2503cceb4b31c0153c22e4eb81de30
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
+<<<<<<< HEAD
             additionalProperties: true
             type: object
       summary: Mendapatkan semua data room
       tags:
       - Rooms
+=======
+            items:
+              $ref: '#/definitions/model.ProfileUser'
+            type: array
+      summary: Mendapatkan data profile
+      tags:
+      - Profile
+>>>>>>> 7c7980a14e2503cceb4b31c0153c22e4eb81de30
   /snacks:
     get:
       consumes:

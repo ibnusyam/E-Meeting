@@ -9,10 +9,11 @@ import (
 )
 
 type Handlers struct {
-	SnackHandler *handler.SnackHandler
+	SnackHandler   *handler.SnackHandler
+	UserHandler    *handler.UserHandler
+	RoomHandler    *handler.RoomHandler
+	ProfileHandler *handler.ProfileHandler
 	//tambahin buat handerl lain
-	UserHandler *handler.UserHandler
-	RoomHandler *handler.RoomHandler
 }
 
 func SetupRoutes(e *echo.Echo, h *Handlers) {
@@ -26,5 +27,7 @@ func SetupRoutes(e *echo.Echo, h *Handlers) {
 	e.POST("/register", h.UserHandler.Register)
 
 	e.GET("/snacks", h.SnackHandler.GetAllSnacks)
+	e.GET("/profile/:id", h.ProfileHandler.GetUserProfileByID)
 	e.GET("/rooms", h.RoomHandler.GetAllRooms)
+
 }

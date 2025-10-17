@@ -65,7 +65,10 @@ func main() {
 	snackService := service.NewSnackService(snackRepo)
 	snackHandler := handler.NewSnackHandler(snackService)
 
-	// ambil data user
+	profileRepo := repository.NewProfileRepository(db)
+	profileService := service.NewProfileService(profileRepo)
+	profileHandler := handler.NewProfileHandler(profileService)
+
 	userRepo := repository.NewUserRepository(db)
 	userService := service.NewUserService(userRepo)
 	userHandler := handler.NewUserHandler(userService)
@@ -76,9 +79,10 @@ func main() {
 	roomHandler := handler.NewRoomHandler(roomService)
 
 	allHandlers := &route.Handlers{
-		SnackHandler: snackHandler,
-		UserHandler:  userHandler,
-		RoomHandler:  roomHandler,
+		SnackHandler:   snackHandler,
+		ProfileHandler: profileHandler,
+		UserHandler:    userHandler,
+		RoomHandler:    roomHandler,
 		// handler lain di sini
 	}
 
