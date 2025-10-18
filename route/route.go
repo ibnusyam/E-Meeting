@@ -9,10 +9,11 @@ import (
 )
 
 type Handlers struct {
-	SnackHandler   *handler.SnackHandler
-	UserHandler    *handler.UserHandler
-	RoomHandler    *handler.RoomHandler
-	ProfileHandler *handler.ProfileHandler
+	SnackHandler       *handler.SnackHandler
+	UserHandler        *handler.UserHandler
+	RoomHandler        *handler.RoomHandler
+	ProfileHandler     *handler.ProfileHandler
+	ReservationHandler *handler.ReservationHandler
 	//tambahin buat handerl lain
 }
 
@@ -25,9 +26,9 @@ func SetupRoutes(e *echo.Echo, h *Handlers) {
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
 	e.POST("/register", h.UserHandler.Register)
-
-	e.GET("/snacks", h.SnackHandler.GetAllSnacks)
-	e.GET("/profile/:id", h.ProfileHandler.GetUserProfileByID)
+	e.POST("/reservations", h.ReservationHandler.CreateReservation)
 	e.GET("/rooms", h.RoomHandler.GetAllRooms)
 
+	e.GET("/snacks", h.SnackHandler.GetAllSnacks)
+	e.GET("/rooms", h.RoomHandler.GetAllRooms)
 }

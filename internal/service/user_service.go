@@ -22,9 +22,16 @@ func NewUserService(repo repository.UserRepository) UserService {
 }
 
 func isValidPassword(password string) bool {
-	// Minimal 1 huruf kecil, 1 huruf besar, 1 angka, 1 simbol, panjang ≥ 8
-	var passwordRegex = regexp.MustCompile(`^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$`)
-	return passwordRegex.MatchString(password)
+	if len(password) < 8 {
+		return false
+	}
+
+	hasLower := regexp.MustCompile(`[a-z]`).MatchString(password)
+	hasUpper := regexp.MustCompile(`[A-Z]`).MatchString(password)
+	hasNumber := regexp.MustCompile(`[0-9]`).MatchString(password)
+	hasSpecial := regexp.MustCompile(`[\W_]`).MatchString(password)
+
+	return hasLower && hasUpper && hasNumber && hasSpecial
 }
 
 func (s *userService) Register(email, username, password, confirmPassword string) error {

@@ -28,7 +28,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.RegisterRequest"
+                            "$ref": "#/definitions/model.RegisterRequest"
                         }
                     }
                 ],
@@ -49,6 +49,62 @@
                     },
                     "500": {
                         "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/reservations": {
+            "post": {
+                "description": "Create a new meeting room reservation with room details and snacks",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Reservations"
+                ],
+                "summary": "Create a new reservation",
+                "parameters": [
+                    {
+                        "description": "Reservation Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ReservationRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "reservation created successfully",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "invalid request / room not found / room has been booked / invalid userID",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
@@ -143,7 +199,7 @@
         }
     },
     "definitions": {
-        "handler.RegisterRequest": {
+        "model.RegisterRequest": {
             "type": "object",
             "properties": {
                 "confirmPassword": {
@@ -157,6 +213,62 @@
                 },
                 "username": {
                     "type": "string"
+                }
+            }
+        },
+        "model.ReservationRequest": {
+            "type": "object",
+            "properties": {
+                "company": {
+                    "type": "string",
+                    "example": "ABC Company"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "John Doe"
+                },
+                "notes": {
+                    "type": "string",
+                    "example": "Special request"
+                },
+                "phoneNumber": {
+                    "type": "string",
+                    "example": "081234567890"
+                },
+                "rooms": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.RoomRequest"
+                    }
+                },
+                "userID": {
+                    "type": "string",
+                    "example": "1"
+                }
+            }
+        },
+        "model.RoomRequest": {
+            "type": "object",
+            "properties": {
+                "endTime": {
+                    "type": "string",
+                    "example": "2025-10-17T14:00:00Z"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "participant": {
+                    "type": "integer",
+                    "example": 2
+                },
+                "snackID": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "startTime": {
+                    "type": "string",
+                    "example": "2025-10-17T12:00:00Z"
                 }
             }
         },
@@ -174,6 +286,9 @@
                 },
                 "price": {
                     "type": "number"
+                },
+                "unit": {
+                    "type": "integer"
                 }
             }
         }
