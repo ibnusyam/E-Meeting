@@ -65,8 +65,20 @@ func main() {
 	snackService := service.NewSnackService(snackRepo)
 	snackHandler := handler.NewSnackHandler(snackService)
 
+	// login and aut
+	userRepo := repository.NewUserRepository(db)
+	authService := service.NewAuthService(userRepo)
+	loginHandler := handler.NewLoginHandler(authService)
+
+	// room reservation schedule
+	roomReservationRepo := repository.NewRoomReservationScheduleRepository(db)
+	roomReservationService := service.NewRoomReservationScheduleService(roomReservationRepo)
+	roomReservationHandler := handler.NewRoomReservationScheduleHandler(roomReservationService)
+
 	allHandlers := &route.Handlers{
-		SnackHandler: snackHandler,
+		SnackHandler:                   snackHandler,
+		LoginHandler:                   loginHandler,
+		RoomReservationScheduleHandler: roomReservationHandler,
 		// handler lain di sini
 	}
 

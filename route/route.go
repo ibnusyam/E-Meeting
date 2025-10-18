@@ -2,6 +2,7 @@ package route
 
 import (
 	"E-Meeting/handler"
+	"E-Meeting/internal/middleware"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -9,7 +10,9 @@ import (
 )
 
 type Handlers struct {
-	SnackHandler *handler.SnackHandler
+	SnackHandler                   *handler.SnackHandler
+	LoginHandler                   *handler.LoginHandler
+	RoomReservationScheduleHandler *handler.RoomReservationScheduleHandler
 	//tambahin buat handerl lain
 }
 
@@ -22,4 +25,11 @@ func SetupRoutes(e *echo.Echo, h *Handlers) {
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
 	e.GET("/snacks", h.SnackHandler.GetAllSnacks)
+
+	e.POST("/login", h.LoginHandler.Login)
+
+	authGroup := e.Group("/rooms")
+	authGroup.Use(middleware.JWTMiddleware)
+	authGroup.GET("/:id_room/reservation", h.RoomReservationScheduleHandler.GetRoomReservationSchedules)
+
 }
