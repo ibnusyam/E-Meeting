@@ -76,6 +76,63 @@ type ReservationRequest struct {
 // 	Price float64
 // }
 
+type ReservationCalculationSnack struct {
+	ID       int     `json:"id"`
+	Name     string  `json:"name"`
+	Unit     string  `json:"unit"` // uncomment jika dipakai
+	Price    float64 `json:"price"`
+	Category string  `json:"category"`
+}
+
+type ReservationCalculationRooms struct {
+	Name          string                      `json:"name"`
+	PricePerHour  float64                     `json:"pricePerHour"`
+	ImagesUrl     string                      `json:"imageURL"`
+	Capacity      int                         `json:"capacity"`
+	Type          string                      `json:"type"`
+	SubTotalSnack float64                     `json:"subTotalSnack"`
+	SubTotalRooms float64                     `json:"subTotalRoom"`
+	StartTime     time.Time                   `json:"startTime"`
+	EndTime       time.Time                   `json:"endTime"`
+	Duration      int                         `json:"duration"`
+	Participant   int                         `json:"participant"`
+	Snack         ReservationCalculationSnack `json:"snack"`
+}
+
+type ReservationCalculationRequest struct {
+	RoomID      int       `json:"room_id" query:"room_id"`
+	SnackID     int       `json:"snack_id" query:"snack_id"`
+	StartTime   time.Time `json:"startTime" query:"startTime"`
+	EndTime     time.Time `json:"endTime" query:"endTime"`
+	Participant int       `json:"participant" query:"participant"`
+	UserID      int       `json:"user_id" query:"user_id"`
+	Name        string    `json:"name" query:"name"`
+	PhoneNumber string    `json:"phoneNumber" query:"phoneNumber"`
+	Company     string    `json:"company" query:"company"`
+}
+
+type ReservationCalculationPersonalData struct {
+	Name        string `json:"name"`
+	PhoneNumber string `json:"phoneNumber"`
+	Company     string `json:"company"`
+}
+
+type ReservationCalculationData struct {
+	Rooms         []ReservationCalculationRooms      `json:"rooms"`
+	PersonalData  ReservationCalculationPersonalData `json:"personalData"`
+	SubTotalRoom  float64                            `json:"subTotalRoom"`
+	SubTotalSnack float64                            `json:"subTotalSnack"`
+	Total         float64                            `json:"total"`
+}
+
+type ReservationCalculationResponse struct {
+	Message       string                     `json:"message"`
+	Data          ReservationCalculationData `json:"data"`
+	SubTotalRoom  float64                    `json:"subTotalRoom"`
+	SubTotalSnack float64                    `json:"subTotalSnack"`
+	Total         float64                    `json:"total"`
+}
+
 type ReservationDetailDTO struct {
 	ID               int       `json:"id"`
 	ReservationID    int       `json:"reservation_id"`

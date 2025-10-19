@@ -90,6 +90,116 @@ const docTemplate = `{
                 }
             }
         },
+<<<<<<< HEAD
+=======
+        "/reservation/calculation": {
+            "get": {
+                "description": "Hitung total biaya reservasi berdasarkan room, snack, waktu, dan peserta",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Reservation"
+                ],
+                "summary": "Reservation Calculation",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID ruangan",
+                        "name": "room_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "ID snack (optional)",
+                        "name": "snack_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Waktu mulai (format RFC3339)",
+                        "name": "startTime",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Waktu selesai (format RFC3339)",
+                        "name": "endTime",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Jumlah peserta",
+                        "name": "participant",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "ID user (optional)",
+                        "name": "user_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Nama pemesan",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Nomor telepon pemesan",
+                        "name": "phoneNumber",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Nama perusahaan",
+                        "name": "company",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/model.ReservationCalculationResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request - over capacity / booking bentrok",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+>>>>>>> origin/alex
         "/reservations": {
             "post": {
                 "description": "Create a new meeting room reservation with room details and snacks",
@@ -232,6 +342,17 @@ const docTemplate = `{
         }
     },
     "definitions": {
+<<<<<<< HEAD
+=======
+        "handler.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+>>>>>>> origin/alex
         "model.ProfileUser": {
             "type": "object",
             "properties": {
@@ -284,6 +405,123 @@ const docTemplate = `{
                 }
             }
         },
+<<<<<<< HEAD
+=======
+        "model.ReservationCalculationData": {
+            "type": "object",
+            "properties": {
+                "personalData": {
+                    "$ref": "#/definitions/model.ReservationCalculationPersonalData"
+                },
+                "rooms": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.ReservationCalculationRooms"
+                    }
+                }
+            }
+        },
+        "model.ReservationCalculationPersonalData": {
+            "type": "object",
+            "properties": {
+                "company": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phoneNumber": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.ReservationCalculationResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/model.ReservationCalculationData"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "subTotalRoom": {
+                    "type": "number",
+                    "format": "float64"
+                },
+                "subTotalSnack": {
+                    "type": "number",
+                    "format": "float64"
+                },
+                "total": {
+                    "type": "number",
+                    "format": "float64"
+                }
+            }
+        },
+        "model.ReservationCalculationRooms": {
+            "type": "object",
+            "properties": {
+                "capacity": {
+                    "type": "integer"
+                },
+                "duration": {
+                    "type": "integer"
+                },
+                "endTime": {
+                    "type": "string"
+                },
+                "imagesUrl": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "participant": {
+                    "type": "integer"
+                },
+                "pricePerHour": {
+                    "type": "number",
+                    "format": "float64"
+                },
+                "snack": {
+                    "$ref": "#/definitions/model.ReservationCalculationSnack"
+                },
+                "startTime": {
+                    "type": "string"
+                },
+                "subTotalRooms": {
+                    "type": "number",
+                    "format": "float64"
+                },
+                "subTotalSnack": {
+                    "type": "number",
+                    "format": "float64"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.ReservationCalculationSnack": {
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price": {
+                    "description": "unit string",
+                    "type": "number",
+                    "format": "float64"
+                }
+            }
+        },
+>>>>>>> origin/alex
         "model.ReservationRequest": {
             "type": "object",
             "properties": {

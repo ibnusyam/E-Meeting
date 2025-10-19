@@ -21,6 +21,7 @@ type Handlers struct {
 	RoomReservationScheduleHandler *handler.RoomReservationScheduleHandler
 	UploadHandler                  *handler.UploadHandler
 	DashboardHandler               *handler.DashboardHandler
+	ReservationCalculationHandler  *handler.ReservationCalculationHandler
 	//tambahin buat handerl lain
 }
 
@@ -44,6 +45,7 @@ func SetupRoutes(e *echo.Echo, h *Handlers) {
 
 	e.GET("/profile/:id", h.ProfileHandler.GetUserProfileByID)
 	e.GET("/rooms", h.RoomHandler.GetAllRooms)
+	e.GET("/reservation/calculation", h.ReservationCalculationHandler.GetReservationCalculation)
 
 	e.POST("/login", h.LoginHandler.Login)
 
