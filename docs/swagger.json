@@ -8,6 +8,32 @@
     },
     "host": "localhost:8080",
     "paths": {
+        "/profile/:id": {
+            "get": {
+                "description": "Mengambil data profile berdasarkan id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Profile"
+                ],
+                "summary": "Mendapatkan data profile",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.ProfileUser"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/register": {
             "post": {
                 "description": "Register user baru",
@@ -216,6 +242,7 @@
                 }
             }
         },
+<<<<<<< HEAD
         "model.ReservationRequest": {
             "type": "object",
             "properties": {
@@ -269,6 +296,40 @@
                 "startTime": {
                     "type": "string",
                     "example": "2025-10-17T12:00:00Z"
+=======
+        "model.ProfileUser": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "imageURL": {
+                    "type": "string"
+                },
+                "language": {
+                    "type": "string"
+                },
+                "phone_number": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "status_user": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+>>>>>>> 7638844 (tambah endpoint /reservation/schedule)
                 }
             }
         },

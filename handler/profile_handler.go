@@ -31,7 +31,7 @@ func (h *ProfileHandler) GetUserProfileByID(c echo.Context) error {
 	id := c.Param("id")
 	profile, err := h.Service.GetUserProfileByID(id)
 	if err != nil {
-		c.String(http.StatusBadRequest, "error cuy")
+		return c.String(http.StatusBadRequest, "user not found")
 	}
 	profileDTO := model.ProfileUser{
 		ID:             profile.ID,
