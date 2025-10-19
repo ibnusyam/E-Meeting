@@ -19,11 +19,11 @@ func NewAuthService(repo *repository.UserRepository) *AuthService {
 func (s *AuthService) Login(username, password string) (string, string, error) {
 	user, err := s.Repo.GetByUsername(username)
 	if err != nil {
-		return "", "", errors.New("login failed (user not found)")
+		return "", "", errors.New("login failed")
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
-		return "", "", errors.New("login failed (incorrect password)")
+		return "", "", errors.New("login failed")
 	}
 
 	accessToken, err := utils.GenerateAccessToken(username)

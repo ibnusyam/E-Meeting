@@ -13,6 +13,7 @@ type Handlers struct {
 	SnackHandler                   *handler.SnackHandler
 	LoginHandler                   *handler.LoginHandler
 	RoomReservationScheduleHandler *handler.RoomReservationScheduleHandler
+	DashboardHandler               *handler.DashboardHandler
 	//tambahin buat handerl lain
 }
 
@@ -27,6 +28,8 @@ func SetupRoutes(e *echo.Echo, h *Handlers) {
 	e.GET("/snacks", h.SnackHandler.GetAllSnacks)
 
 	e.POST("/login", h.LoginHandler.Login)
+
+	e.GET("/dashboard", h.DashboardHandler.GetDashboard)
 
 	authGroup := e.Group("/rooms")
 	authGroup.Use(middleware.JWTMiddleware)
