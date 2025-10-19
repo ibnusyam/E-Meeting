@@ -15,6 +15,302 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/profile/:id": {
+            "get": {
+                "description": "Mengambil data profile berdasarkan id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Profile"
+                ],
+                "summary": "Mendapatkan data profile",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.ProfileUser"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/register": {
+            "post": {
+                "description": "Register user baru",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Register"
+                ],
+                "summary": "Register user baru",
+                "parameters": [
+                    {
+                        "description": "Register Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.RegisterRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Register Success",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/reservation/calculation": {
+            "get": {
+                "description": "Hitung total biaya reservasi berdasarkan room, snack, waktu, dan peserta",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Reservation"
+                ],
+                "summary": "Reservation Calculation",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID ruangan",
+                        "name": "room_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "ID snack (optional)",
+                        "name": "snack_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Waktu mulai (format RFC3339)",
+                        "name": "startTime",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Waktu selesai (format RFC3339)",
+                        "name": "endTime",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Jumlah peserta",
+                        "name": "participant",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "ID user (optional)",
+                        "name": "user_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Nama pemesan",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Nomor telepon pemesan",
+                        "name": "phoneNumber",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Nama perusahaan",
+                        "name": "company",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/model.ReservationCalculationResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request - over capacity / booking bentrok",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/reservations": {
+            "post": {
+                "description": "Create a new meeting room reservation with room details and snacks",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Reservations"
+                ],
+                "summary": "Create a new reservation",
+                "parameters": [
+                    {
+                        "description": "Reservation Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ReservationRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "reservation created successfully",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "invalid request / room not found / room has been booked / invalid userID",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/rooms": {
+            "get": {
+                "description": "Mengambil seluruh daftar room yang tersedia dengan filter dan pagination",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rooms"
+                ],
+                "summary": "Mendapatkan semua data room",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Nama ruangan",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Tipe ruangan",
+                        "name": "type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Kapasitas minimal",
+                        "name": "capacity",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Nomor halaman",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 20,
+                        "description": "Jumlah data per halaman",
+                        "name": "pageSize",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
         "/snacks": {
             "get": {
                 "description": "Mengambil seluruh daftar snack yang tersedia",
@@ -43,6 +339,236 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "handler.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.ProfileUser": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "imageURL": {
+                    "type": "string"
+                },
+                "language": {
+                    "type": "string"
+                },
+                "phone_number": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "status_user": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.RegisterRequest": {
+            "type": "object",
+            "properties": {
+                "confirmPassword": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.ReservationCalculationData": {
+            "type": "object",
+            "properties": {
+                "personalData": {
+                    "$ref": "#/definitions/model.ReservationCalculationPersonalData"
+                },
+                "rooms": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.ReservationCalculationRooms"
+                    }
+                }
+            }
+        },
+        "model.ReservationCalculationPersonalData": {
+            "type": "object",
+            "properties": {
+                "company": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phoneNumber": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.ReservationCalculationResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/model.ReservationCalculationData"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "subTotalRoom": {
+                    "type": "number",
+                    "format": "float64"
+                },
+                "subTotalSnack": {
+                    "type": "number",
+                    "format": "float64"
+                },
+                "total": {
+                    "type": "number",
+                    "format": "float64"
+                }
+            }
+        },
+        "model.ReservationCalculationRooms": {
+            "type": "object",
+            "properties": {
+                "capacity": {
+                    "type": "integer"
+                },
+                "duration": {
+                    "type": "integer"
+                },
+                "endTime": {
+                    "type": "string"
+                },
+                "imagesUrl": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "participant": {
+                    "type": "integer"
+                },
+                "pricePerHour": {
+                    "type": "number",
+                    "format": "float64"
+                },
+                "snack": {
+                    "$ref": "#/definitions/model.ReservationCalculationSnack"
+                },
+                "startTime": {
+                    "type": "string"
+                },
+                "subTotalRooms": {
+                    "type": "number",
+                    "format": "float64"
+                },
+                "subTotalSnack": {
+                    "type": "number",
+                    "format": "float64"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.ReservationCalculationSnack": {
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price": {
+                    "description": "unit string",
+                    "type": "number",
+                    "format": "float64"
+                }
+            }
+        },
+        "model.ReservationRequest": {
+            "type": "object",
+            "properties": {
+                "company": {
+                    "type": "string",
+                    "example": "ABC Company"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "John Doe"
+                },
+                "notes": {
+                    "type": "string",
+                    "example": "Special request"
+                },
+                "phoneNumber": {
+                    "type": "string",
+                    "example": "081234567890"
+                },
+                "rooms": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.RoomRequest"
+                    }
+                },
+                "userID": {
+                    "type": "string",
+                    "example": "1"
+                }
+            }
+        },
+        "model.RoomRequest": {
+            "type": "object",
+            "properties": {
+                "endTime": {
+                    "type": "string",
+                    "example": "2025-10-17T14:00:00Z"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "participant": {
+                    "type": "integer",
+                    "example": 2
+                },
+                "snackID": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "startTime": {
+                    "type": "string",
+                    "example": "2025-10-17T12:00:00Z"
+                }
+            }
+        },
         "model.Snack": {
             "type": "object",
             "properties": {
@@ -57,6 +583,9 @@ const docTemplate = `{
                 },
                 "price": {
                     "type": "number"
+                },
+                "unit": {
+                    "type": "integer"
                 }
             }
         }

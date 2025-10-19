@@ -83,12 +83,17 @@ func main() {
 	reservationService := service.NewReservationService(reservationRepo)
 	reservationHandler := handler.NewReservationHandler(reservationService)
 
+	reservationCalculationRepo := repository.NewReservationCalculationRepository(db)
+	reservationCalculationService := service.NewReservationCalculationService(reservationCalculationRepo)
+	reservationCalculationHandler := handler.NewReservationCalculationHandler(reservationCalculationService)
+
 	allHandlers := &route.Handlers{
-		SnackHandler:       snackHandler,
-		UserHandler:        userHandler,
-		RoomHandler:        roomHandler,
-		ProfileHandler:     profileHandler,
-		ReservationHandler: reservationHandler,
+		SnackHandler:                  snackHandler,
+		UserHandler:                   userHandler,
+		RoomHandler:                   roomHandler,
+		ProfileHandler:                profileHandler,
+		ReservationHandler:            reservationHandler,
+		ReservationCalculationHandler: reservationCalculationHandler,
 		// handler lain di sini
 	}
 
