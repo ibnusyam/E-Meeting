@@ -16,6 +16,12 @@ type User struct {
 	UpdatedAt      string         `json:"updatedAt"`
 }
 
+type UserDTO struct {
+	ID       int    `json:"id" gorm:"primaryKey;autoIncrement"`
+	Username string `json:"username" gorm:"not null"`
+	Password string `json:"password" gorm:"not null"`
+}
+
 type ProfileUser struct {
 	ID             int     `json:"id"`
 	Role           string  `json:"role"`

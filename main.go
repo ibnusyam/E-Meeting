@@ -60,6 +60,16 @@ func main() {
 		return
 	}
 
+	// login and aut
+	userRepo := repository.NewUserRepository(db)
+	authService := service.NewAuthService(userRepo)
+	loginHandler := handler.NewLoginHandler(authService)
+
+	// room reservation schedule
+	roomReservationRepo := repository.NewRoomReservationScheduleRepository(db)
+	roomReservationService := service.NewRoomReservationScheduleService(roomReservationRepo)
+	roomReservationHandler := handler.NewRoomReservationScheduleHandler(roomReservationService)
+
 	// ambil data snack
 	snackRepo := repository.NewSnackRepository(db)
 	snackService := service.NewSnackService(snackRepo)
@@ -84,11 +94,13 @@ func main() {
 
 	//testing
 	allHandlers := &route.Handlers{
-		SnackHandler:       snackHandler,
-		ProfileHandler:     profileHandler,
-		UserHandler:        userHandler,
-		RoomHandler:        roomHandler,
-		ReservationHandler: reservationHandler,
+		SnackHandler:                   snackHandler,
+		ProfileHandler:                 profileHandler,
+		UserHandler:                    userHandler,
+		RoomHandler:                    roomHandler,
+		ReservationHandler:             reservationHandler,
+		LoginHandler:                   loginHandler,
+		RoomReservationScheduleHandler: roomReservationHandler,
 		// handler lain di sini
 	}
 

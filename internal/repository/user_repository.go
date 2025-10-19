@@ -6,6 +6,10 @@ import (
 	"database/sql"
 )
 
+type UserRepository struct {
+	DB *sql.DB
+}
+
 type UserRepository interface {
 	Create(user *model.User) error
 	GetByEmail(email string) (*model.User, error)
@@ -13,6 +17,16 @@ type UserRepository interface {
 
 type userRepository struct {
 	db *sql.DB
+}
+
+func (r *UserRepository) GetByUsername(username string) (*model.User, error) {
+	user := &model.User{}
+	query := `SELECT id, username, password FROM users WHERE username = $1`
+	err := r.DB.QueryRow(query, username).Scan(&user.ID, &user.Username, &user.Password)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
 }
 
 func NewUserRepository(db *sql.DB) UserRepository {

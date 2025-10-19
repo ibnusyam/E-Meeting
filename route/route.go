@@ -37,4 +37,10 @@ func SetupRoutes(e *echo.Echo, h *Handlers) {
 
 	e.GET("/profile/:id", h.ProfileHandler.GetUserProfileByID)
 	e.GET("/rooms", h.RoomHandler.GetAllRooms)
+
+	e.POST("/login", h.LoginHandler.Login)
+
+	authGroup := e.Group("/rooms")
+	authGroup.Use(middleware.JWTMiddleware)
+	authGroup.GET("/:id_room/reservation", h.RoomReservationScheduleHandler.GetRoomReservationSchedules)
 }
