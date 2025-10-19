@@ -36,7 +36,7 @@ func (h *UploadHandler) UploadFile(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, echo.Map{"message": "internal server error: failed to process file"})
 	}
 
-	// RESPONSE SUKSES : 200
+	// RESPONSE SUKSES :200
 	return c.JSON(http.StatusOK, echo.Map{
 		"message": "upload file success",
 		"data": echo.Map{

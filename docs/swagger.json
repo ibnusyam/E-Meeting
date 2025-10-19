@@ -8,7 +8,6 @@
     },
     "host": "localhost:8080",
     "paths": {
-<<<<<<< HEAD
         "/profile/:id": {
             "get": {
                 "description": "Mengambil data profile berdasarkan id",
@@ -38,11 +37,6 @@
         "/register": {
             "post": {
                 "description": "Register user baru",
-=======
-        "/login": {
-            "post": {
-                "description": "Authenticate user and return access and refresh tokens",
->>>>>>> origin/novita
                 "consumes": [
                     "application/json"
                 ],
@@ -50,7 +44,6 @@
                     "application/json"
                 ],
                 "tags": [
-<<<<<<< HEAD
                     "Register"
                 ],
                 "summary": "Register user baru",
@@ -62,29 +55,12 @@
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/model.RegisterRequest"
-=======
-                    "Auth"
-                ],
-                "summary": "User Login",
-                "parameters": [
-                    {
-                        "description": "Login Request",
-                        "name": "loginRequest",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/handler.LoginRequest"
->>>>>>> origin/novita
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-<<<<<<< HEAD
                         "description": "Register Success",
-=======
-                        "description": "OK",
->>>>>>> origin/novita
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
@@ -94,7 +70,6 @@
                         "description": "Bad Request",
                         "schema": {
                             "type": "object",
-<<<<<<< HEAD
                             "additionalProperties": true
                         }
                     },
@@ -217,11 +192,6 @@
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
-=======
-                            "additionalProperties": {
-                                "type": "string"
-                            }
->>>>>>> origin/novita
                         }
                     }
                 }
@@ -255,7 +225,6 @@
         }
     },
     "definitions": {
-<<<<<<< HEAD
         "model.ProfileUser": {
             "type": "object",
             "properties": {
@@ -300,11 +269,6 @@
                 "email": {
                     "type": "string"
                 },
-=======
-        "handler.LoginRequest": {
-            "type": "object",
-            "properties": {
->>>>>>> origin/novita
                 "password": {
                     "type": "string"
                 },
@@ -313,7 +277,6 @@
                 }
             }
         },
-<<<<<<< HEAD
         "model.ReservationRequest": {
             "type": "object",
             "properties": {
@@ -370,8 +333,6 @@
                 }
             }
         },
-=======
->>>>>>> origin/novita
         "model.Snack": {
             "type": "object",
             "properties": {
