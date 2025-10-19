@@ -35,21 +35,6 @@ func SetupRoutes(e *echo.Echo, h *Handlers) {
 	e.POST("/reservations", h.ReservationHandler.CreateReservation)
 	e.GET("/rooms", h.RoomHandler.GetAllRooms)
 
-	e.GET("/snacks", h.SnackHandler.GetAllSnacks)
 	e.GET("/profile/:id", h.ProfileHandler.GetUserProfileByID)
 	e.GET("/rooms", h.RoomHandler.GetAllRooms)
-
-	e.GET("/reservation/schedule", func(c echo.Context) error {
-		reservations, err := h.ReservationRepository.GetAllSchedule()
-		if err != nil {
-
-			return c.JSON(http.StatusInternalServerError, map[string]string{
-				"error":   "error",
-				"message": err.Error(),
-			})
-		}
-
-		return c.JSON(http.StatusOK, reservations)
-	})
-
 }

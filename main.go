@@ -83,15 +83,12 @@ func main() {
 	reservationHandler := handler.NewReservationHandler(reservationService)
 
 	//testing
-	scheduleRepo := repository.NewReservationSchedule(db)
 	allHandlers := &route.Handlers{
-		SnackHandler:          snackHandler,
-		ProfileHandler:        profileHandler,
-		UserHandler:           userHandler,
-		RoomHandler:           roomHandler,
-		ProfileHandler:        profileHandler,
-		ReservationHandler:    reservationHandler,
-		ReservationRepository: scheduleRepo,
+		SnackHandler:       snackHandler,
+		ProfileHandler:     profileHandler,
+		UserHandler:        userHandler,
+		RoomHandler:        roomHandler,
+		ReservationHandler: reservationHandler,
 		// handler lain di sini
 	}
 
