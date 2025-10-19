@@ -24,6 +24,7 @@ import (
 // @description Ini adalah API server untuk aplikasi E-Meeting.
 // @host localhost:8080
 // @BasePath
+// @BasePath
 func main() {
 	err := godotenv.Load()
 	if err != nil {
@@ -99,6 +100,10 @@ func main() {
 	uploadService := service.NewUploadService(uploadRepo)
 	uploadHandler := handler.NewUploadHandler(uploadService)
 
+	dashboardRepo := repository.NewDashboardRepository(db)
+	dashboardService := service.NewDashboardService(dashboardRepo)
+	dashboardHandler := handler.NewDashboardHandler(dashboardService)
+
 	//testing
 	allHandlers := &route.Handlers{
 		SnackHandler:                   snackHandler,
@@ -109,6 +114,7 @@ func main() {
 		LoginHandler:                   loginHandler,
 		RoomReservationScheduleHandler: roomReservationHandler,
 		UploadHandler:                  uploadHandler,
+		DashboardHandler:               dashboardHandler,
 		// handler lain di sini
 	}
 

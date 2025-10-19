@@ -20,6 +20,7 @@ type Handlers struct {
 	LoginHandler                   *handler.LoginHandler
 	RoomReservationScheduleHandler *handler.RoomReservationScheduleHandler
 	UploadHandler                  *handler.UploadHandler
+	DashboardHandler               *handler.DashboardHandler
 	//tambahin buat handerl lain
 }
 
