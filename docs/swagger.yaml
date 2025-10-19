@@ -1,15 +1,4 @@
 definitions:
-  handler.RegisterRequest:
-    properties:
-      confirmPassword:
-        type: string
-      email:
-        type: string
-      password:
-        type: string
-      username:
-        type: string
-    type: object
   model.ProfileUser:
     properties:
       createdAt:
@@ -33,6 +22,57 @@ definitions:
       username:
         type: string
     type: object
+  model.RegisterRequest:
+    properties:
+      confirmPassword:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  model.ReservationRequest:
+    properties:
+      company:
+        example: ABC Company
+        type: string
+      name:
+        example: John Doe
+        type: string
+      notes:
+        example: Special request
+        type: string
+      phoneNumber:
+        example: "081234567890"
+        type: string
+      rooms:
+        items:
+          $ref: '#/definitions/model.RoomRequest'
+        type: array
+      userID:
+        example: "1"
+        type: string
+    type: object
+  model.RoomRequest:
+    properties:
+      endTime:
+        example: "2025-10-17T14:00:00Z"
+        type: string
+      id:
+        example: 1
+        type: integer
+      participant:
+        example: 2
+        type: integer
+      snackID:
+        example: 1
+        type: integer
+      startTime:
+        example: "2025-10-17T12:00:00Z"
+        type: string
+    type: object
   model.Snack:
     properties:
       category:
@@ -43,6 +83,8 @@ definitions:
         type: string
       price:
         type: number
+      unit:
+        type: integer
     type: object
 host: localhost:8080
 info:
@@ -79,7 +121,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/handler.RegisterRequest'
+          $ref: '#/definitions/model.RegisterRequest'
       produces:
       - application/json
       responses:
@@ -101,6 +143,45 @@ paths:
       summary: Register user baru
       tags:
       - Register
+  /reservations:
+    post:
+      consumes:
+      - application/json
+      description: Create a new meeting room reservation with room details and snacks
+      parameters:
+      - description: Reservation Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.ReservationRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: reservation created successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: invalid request / room not found / room has been booked / invalid
+            userID
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Create a new reservation
+      tags:
+      - Reservations
   /rooms:
     get:
       consumes:

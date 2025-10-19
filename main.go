@@ -79,7 +79,6 @@ func main() {
 	profileService := service.NewProfileService(profileRepo)
 	profileHandler := handler.NewProfileHandler(profileService)
 
-	userRepo := repository.NewUserRepository(db)
 	userService := service.NewUserService(userRepo)
 	userHandler := handler.NewUserHandler(userService)
 
@@ -92,6 +91,14 @@ func main() {
 	reservationService := service.NewReservationService(reservationRepo)
 	reservationHandler := handler.NewReservationHandler(reservationService)
 
+	const tempDir = "public/temp"
+	const uploadDir = "public/uploads"
+	const baseURL = "http://localhost:8080/assets"
+
+	uploadRepo := repository.NewLocalDiskRepository(uploadDir, baseURL)
+	uploadService := service.NewUploadService(uploadRepo)
+	uploadHandler := handler.NewUploadHandler(uploadService)
+
 	//testing
 	allHandlers := &route.Handlers{
 		SnackHandler:                   snackHandler,
@@ -101,11 +108,15 @@ func main() {
 		ReservationHandler:             reservationHandler,
 		LoginHandler:                   loginHandler,
 		RoomReservationScheduleHandler: roomReservationHandler,
+		UploadHandler:                  uploadHandler,
 		// handler lain di sini
 	}
 
 	// jalanin server
 	e := echo.New()
+
+	e.Static("/assets", uploadDir)
+	e.Static("/temp_assets", tempDir)
 
 	route.SetupRoutes(e, allHandlers)
 

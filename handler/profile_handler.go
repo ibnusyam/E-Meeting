@@ -4,7 +4,11 @@ import (
 	"E-Meeting/internal/service"
 	"E-Meeting/model"
 	"database/sql"
+	"errors"
+	"log"
 	"net/http"
+	"strconv"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 )
@@ -47,6 +51,42 @@ func (h *ProfileHandler) GetUserProfileByID(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, profileDTO)
+}
+
+func (h *ProfileHandler) UpdateUserHandler(c echo.Context) error {
+	idParam := c.Param("id")
+	userID, err := strconv.Atoi(idParam)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{"message": "invalid user ID format"})
+	}
+
+	var req model.UserUpdateRequest
+	if err := c.Bind(&req); err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{"message": "invalid request body"})
+	}
+
+	// Panggil Service
+	updatedUser, err := h.Service.UpdateUser(c.Request().Context(), userID, req)
+
+	if err != nil {
+		log.Printf("User Update Error [ID: %d]: %v", userID, err)
+
+		if errors.Is(err, service.ErrUserNotFound) {
+			return c.JSON(http.StatusNotFound, map[string]string{"message": "user not found"}) // 404
+		}
+		// Asumsi error lain dari service adalah Bad Request/Internal
+		if strings.Contains(err.Error(), "email is already taken") {
+			return c.JSON(http.StatusBadRequest, map[string]string{"message": "email already taken"}) // 400
+		}
+
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": "internal server error"}) // 500
+	}
+
+	// Respons Sukses
+	return c.JSON(http.StatusOK, echo.Map{
+		"message": "user updated successfully",
+		"data":    updatedUser,
+	})
 }
 
 func convertNullString(s sql.NullString) *string {

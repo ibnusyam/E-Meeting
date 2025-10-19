@@ -4,7 +4,9 @@ package service
 import (
 	"E-Meeting/internal/repository"
 	"E-Meeting/model"
+	"context"
 	"errors"
+	"fmt"
 	"strconv"
 )
 
@@ -33,7 +35,7 @@ func (s *ReservationService) CreateReservation(req model.ReservationRequest) err
 
 	UserID, err := strconv.Atoi(req.UserID)
 	if err != nil {
-		return errors.New("Error when converting userID into string")
+		return errors.New("error when converting userID into string")
 	}
 
 	// Build reservation details with calculations
@@ -108,6 +110,39 @@ func (s *ReservationService) CreateReservation(req model.ReservationRequest) err
 	err = s.Repo.InsertReservation(reservation)
 	if err != nil {
 		return err
+	}
+
+	return nil
+}
+
+var ErrStatusConflict = errors.New("reservation already canceled/paid")
+var ErrReservationNotFound = errors.New("reservation not found")
+
+func (s *ReservationService) UpdateStatus(ctx context.Context, id string, newStatus string) error {
+	invalidStatuses := map[string]bool{"canceled": true, "paid": true}
+
+	var currentStatus string
+	var err error
+
+	currentStatus, err = s.Repo.GetCurrentStatus(ctx, id)
+
+	if err != nil {
+		if errors.Is(err, repository.ErrReservationNotFound) {
+			return ErrReservationNotFound
+		}
+		return fmt.Errorf("service: failed to get current status: %w", err)
+	}
+
+	if invalidStatuses[currentStatus] {
+		return ErrStatusConflict
+	}
+
+	err = s.Repo.UpdateStatus(ctx, id, newStatus)
+	if err != nil {
+		if errors.Is(err, repository.ErrReservationNotFound) {
+			return ErrReservationNotFound
+		}
+		return fmt.Errorf("service: failed to update status: %w", err)
 	}
 
 	return nil

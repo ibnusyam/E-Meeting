@@ -1,6 +1,8 @@
 package model
 
-import "database/sql"
+import (
+	"database/sql"
+)
 
 type User struct {
 	ID             int            `json:"id"`
@@ -40,4 +42,39 @@ type RegisterRequest struct {
 	Username        string `json:"username"`
 	Password        string `json:"password"`
 	ConfirmPassword string `json:"confirmPassword"`
+}
+
+type UserUpdateRequest struct {
+	// 🔥 Semua field yang mungkin diubah harus menggunakan pointer
+	ID             *int    `json:"id"`
+	Username       *string `json:"name"`
+	Email          *string `json:"email"`
+	ProfilePicture *string `json:"imageURL"`
+	Password       *string `json:"password"`
+	PhoneNumber    *string `json:"phone_number"`
+	Language       *string `json:"language"`
+	Role           *string `json:"role"`
+	Status         *string `json:"status"`
+	CreatedAt      *string `json:"createdAt"`
+	UpdatedAt      *string `json:"updatedAt"`
+}
+
+// UserResponse (untuk respons setelah update)
+type UserResponse struct {
+	ID             int     `json:"id"`
+	Username       string  `json:"name"`
+	Email          string  `json:"email"`
+	ProfilePicture *string `json:"imageURL"`
+	Password       *string `json:"password"`
+	PhoneNumber    string  `json:"phone_number"`
+	Language       string  `json:"language"`
+	Role           string  `json:"role"`
+	Status         string  `json:"status"`
+	CreatedAt      string  `json:"createdAt"`
+	UpdatedAt      string  `json:"updatedAt"`
+}
+
+// UploadResponse untuk POST /uploads
+type UploadResponse struct {
+	ImageURL string `json:"imageURL"`
 }

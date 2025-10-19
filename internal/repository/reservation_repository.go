@@ -3,7 +3,10 @@ package repository
 
 import (
 	"E-Meeting/model"
+	"context"
 	"database/sql"
+	"errors"
+	"fmt"
 	"log"
 	"time"
 )
@@ -171,5 +174,42 @@ func (r *ReservationRepository) InsertReservation(reservation model.Reservation)
 	}
 
 	log.Printf("Reservation and details successfully inserted")
+	return nil
+}
+
+var ErrReservationNotFound = errors.New("reservation not found")
+
+func (r *ReservationRepository) GetCurrentStatus(ctx context.Context, id string) (string, error) {
+	var currentStatus string
+	// Gunakan FOR UPDATE jika Anda menggunakan transaksi di layer Service
+	query := "SELECT status_reservation FROM reservations WHERE id = $1 FOR UPDATE" // Sesuaikan dengan DB Anda
+
+	row := r.DB.QueryRowContext(ctx, query, id)
+	if err := row.Scan(&currentStatus); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return "", ErrReservationNotFound
+		}
+		return "", fmt.Errorf("repo: failed to scan current status: %w", err)
+	}
+	return currentStatus, nil
+}
+
+func (r *ReservationRepository) UpdateStatus(ctx context.Context, id string, newStatus string) error {
+	updateQuery := `
+		UPDATE reservations
+		SET status_reservation = $1, updated_at = NOW()
+		WHERE id = $2
+	`
+	// Gunakan DB.ExecContext
+	result, err := r.DB.ExecContext(ctx, updateQuery, newStatus, id)
+	if err != nil {
+		return fmt.Errorf("repo: failed to execute update: %w", err)
+	}
+
+	rowsAffected, _ := result.RowsAffected()
+	if rowsAffected == 0 {
+		return ErrReservationNotFound
+	}
+
 	return nil
 }
