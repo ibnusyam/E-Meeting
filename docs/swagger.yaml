@@ -1,9 +1,12 @@
 definitions:
+<<<<<<< HEAD
+=======
   handler.ErrorResponse:
     properties:
       message:
         type: string
     type: object
+>>>>>>> origin/alex
   model.ProfileUser:
     properties:
       createdAt:
@@ -38,6 +41,8 @@ definitions:
       username:
         type: string
     type: object
+<<<<<<< HEAD
+=======
   model.ReservationCalculationData:
     properties:
       personalData:
@@ -115,6 +120,7 @@ definitions:
         format: float64
         type: number
     type: object
+>>>>>>> origin/alex
   model.ReservationRequest:
     properties:
       company:
@@ -225,6 +231,8 @@ paths:
       summary: Register user baru
       tags:
       - Register
+<<<<<<< HEAD
+=======
   /reservation/calculation:
     get:
       consumes:
@@ -298,6 +306,7 @@ paths:
       summary: Reservation Calculation
       tags:
       - Reservation
+>>>>>>> origin/alex
   /reservations:
     post:
       consumes:

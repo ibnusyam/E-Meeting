@@ -24,6 +24,7 @@ import (
 // @description Ini adalah API server untuk aplikasi E-Meeting.
 // @host localhost:8080
 // @BasePath
+// @BasePath
 func main() {
 	err := godotenv.Load()
 	if err != nil {
@@ -60,6 +61,16 @@ func main() {
 		return
 	}
 
+	// login and aut
+	userRepo := repository.NewUserRepository(db)
+	authService := service.NewAuthService(userRepo)
+	loginHandler := handler.NewLoginHandler(authService)
+
+	// room reservation schedule
+	roomReservationRepo := repository.NewRoomReservationScheduleRepository(db)
+	roomReservationService := service.NewRoomReservationScheduleService(roomReservationRepo)
+	roomReservationHandler := handler.NewRoomReservationScheduleHandler(roomReservationService)
+
 	// ambil data snack
 	snackRepo := repository.NewSnackRepository(db)
 	snackService := service.NewSnackService(snackRepo)
@@ -69,7 +80,6 @@ func main() {
 	profileService := service.NewProfileService(profileRepo)
 	profileHandler := handler.NewProfileHandler(profileService)
 
-	userRepo := repository.NewUserRepository(db)
 	userService := service.NewUserService(userRepo)
 	userHandler := handler.NewUserHandler(userService)
 
@@ -78,7 +88,6 @@ func main() {
 	roomService := service.NewRoomService(roomRepo)
 	roomHandler := handler.NewRoomHandler(roomService)
 
-	// ambil data room
 	reservationRepo := repository.NewReservationRepository(db)
 	reservationService := service.NewReservationService(reservationRepo)
 	reservationHandler := handler.NewReservationHandler(reservationService)
@@ -87,18 +96,38 @@ func main() {
 	reservationCalculationService := service.NewReservationCalculationService(reservationCalculationRepo)
 	reservationCalculationHandler := handler.NewReservationCalculationHandler(reservationCalculationService)
 
+	const tempDir = "public/temp"
+	const uploadDir = "public/uploads"
+	const baseURL = "http://localhost:8080/assets"
+
+	uploadRepo := repository.NewLocalDiskRepository(uploadDir, baseURL)
+	uploadService := service.NewUploadService(uploadRepo)
+	uploadHandler := handler.NewUploadHandler(uploadService)
+
+	dashboardRepo := repository.NewDashboardRepository(db)
+	dashboardService := service.NewDashboardService(dashboardRepo)
+	dashboardHandler := handler.NewDashboardHandler(dashboardService)
+
+	//testing
 	allHandlers := &route.Handlers{
-		SnackHandler:                  snackHandler,
-		UserHandler:                   userHandler,
-		RoomHandler:                   roomHandler,
-		ProfileHandler:                profileHandler,
-		ReservationHandler:            reservationHandler,
-		ReservationCalculationHandler: reservationCalculationHandler,
+		SnackHandler:                   snackHandler,
+		ProfileHandler:                 profileHandler,
+		UserHandler:                    userHandler,
+		RoomHandler:                    roomHandler,
+		ReservationHandler:             reservationHandler,
+		LoginHandler:                   loginHandler,
+		RoomReservationScheduleHandler: roomReservationHandler,
+		UploadHandler:                  uploadHandler,
+		DashboardHandler:               dashboardHandler,
+		ReservationCalculationHandler:  reservationCalculationHandler,
 		// handler lain di sini
 	}
 
 	// jalanin server
 	e := echo.New()
+
+	e.Static("/assets", uploadDir)
+	e.Static("/temp_assets", tempDir)
 
 	route.SetupRoutes(e, allHandlers)
 

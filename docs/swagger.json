@@ -332,6 +332,8 @@
         }
     },
     "definitions": {
+<<<<<<< HEAD
+=======
         "handler.ErrorResponse": {
             "type": "object",
             "properties": {
@@ -340,6 +342,7 @@
                 }
             }
         },
+>>>>>>> origin/alex
         "model.ProfileUser": {
             "type": "object",
             "properties": {

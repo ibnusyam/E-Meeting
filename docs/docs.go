@@ -90,6 +90,8 @@ const docTemplate = `{
                 }
             }
         },
+<<<<<<< HEAD
+=======
         "/reservation/calculation": {
             "get": {
                 "description": "Hitung total biaya reservasi berdasarkan room, snack, waktu, dan peserta",
@@ -197,6 +199,7 @@ const docTemplate = `{
                 }
             }
         },
+>>>>>>> origin/alex
         "/reservations": {
             "post": {
                 "description": "Create a new meeting room reservation with room details and snacks",
@@ -339,6 +342,8 @@ const docTemplate = `{
         }
     },
     "definitions": {
+<<<<<<< HEAD
+=======
         "handler.ErrorResponse": {
             "type": "object",
             "properties": {
@@ -347,6 +352,7 @@ const docTemplate = `{
                 }
             }
         },
+>>>>>>> origin/alex
         "model.ProfileUser": {
             "type": "object",
             "properties": {
@@ -399,6 +405,8 @@ const docTemplate = `{
                 }
             }
         },
+<<<<<<< HEAD
+=======
         "model.ReservationCalculationData": {
             "type": "object",
             "properties": {
@@ -513,6 +521,7 @@ const docTemplate = `{
                 }
             }
         },
+>>>>>>> origin/alex
         "model.ReservationRequest": {
             "type": "object",
             "properties": {

@@ -28,6 +28,7 @@ func NewSnackHandler(service *service.SnackService) *SnackHandler {
 func (h *SnackHandler) GetAllSnacks(c echo.Context) error {
 
 	snacks, err := h.Service.GetAllSnacks()
+
 	if err != nil {
 
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "gagal mengambil data snacks"})
