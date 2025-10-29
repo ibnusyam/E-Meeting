@@ -47,7 +47,7 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
-      - "5433:5432"
+      - "5435:5432"
     networks:
       - skbe5-app-network
     restart: unless-stopped
