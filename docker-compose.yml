@@ -16,7 +16,7 @@ services:
     depends_on:
       - db
     networks:
-      - app-network
+      - skbe5-app-network
     restart: "no" # hanya jalan sekali
 
   app:
@@ -34,7 +34,7 @@ services:
     ports:
       - "8081:8080"
     networks:
-      - app-network
+      - skbe5-app-network
     restart: unless-stopped
 
   db:
@@ -49,12 +49,12 @@ services:
     ports:
       - "5433:5432"
     networks:
-      - app-network
+      - skbe5-app-network
     restart: unless-stopped
 
 volumes:
   pgdata:
 
 networks:
-  app-network:
-    name: app-network
+  skbe5-app-network:
+    name: skbe5-app-network
