@@ -23,9 +23,14 @@ func GetDSN() string {
 	port := os.Getenv("DB_PORT")
 	dbname := os.Getenv("DB_NAME")
 
-	encodedPassword := url.QueryEscape(password)
+	// Debug logging to check environment variables
+	log.Printf("Database configuration: host=%s, port=%s, user=%s, dbname=%s", host, port, user, dbname)
 
-	return fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", user, encodedPassword, host, port, dbname)
+	encodedPassword := url.QueryEscape(password)
+	dsn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", user, encodedPassword, host, port, dbname)
+	log.Printf("DSN: %s", dsn)
+
+	return dsn
 }
 
 func ConnectDB() (*sql.DB, error) {

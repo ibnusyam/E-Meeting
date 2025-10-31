@@ -27,7 +27,7 @@ services:
     depends_on:
       - db
     environment:
-      - DB_HOST=skbe5_postgres_db
+      - DB_HOST=db
       - DB_PORT=5432
       - DB_USER=e_meeting
       - DB_NAME=e-meeting
