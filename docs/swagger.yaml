@@ -1,12 +1,9 @@
 definitions:
-<<<<<<< HEAD
-=======
   handler.ErrorResponse:
     properties:
       message:
         type: string
     type: object
->>>>>>> origin/alex
   model.ProfileUser:
     properties:
       createdAt:
@@ -41,8 +38,6 @@ definitions:
       username:
         type: string
     type: object
-<<<<<<< HEAD
-=======
   model.ReservationCalculationData:
     properties:
       personalData:
@@ -51,6 +46,12 @@ definitions:
         items:
           $ref: '#/definitions/model.ReservationCalculationRooms'
         type: array
+      subTotalRoom:
+        type: number
+      subTotalSnack:
+        type: number
+      total:
+        type: number
     type: object
   model.ReservationCalculationPersonalData:
     properties:
@@ -68,13 +69,10 @@ definitions:
       message:
         type: string
       subTotalRoom:
-        format: float64
         type: number
       subTotalSnack:
-        format: float64
         type: number
       total:
-        format: float64
         type: number
     type: object
   model.ReservationCalculationRooms:
@@ -85,24 +83,21 @@ definitions:
         type: integer
       endTime:
         type: string
-      imagesUrl:
+      imageURL:
         type: string
       name:
         type: string
       participant:
         type: integer
       pricePerHour:
-        format: float64
         type: number
       snack:
         $ref: '#/definitions/model.ReservationCalculationSnack'
       startTime:
         type: string
-      subTotalRooms:
-        format: float64
+      subTotalRoom:
         type: number
       subTotalSnack:
-        format: float64
         type: number
       type:
         type: string
@@ -116,11 +111,11 @@ definitions:
       name:
         type: string
       price:
-        description: unit string
-        format: float64
         type: number
+      unit:
+        description: uncomment jika dipakai
+        type: string
     type: object
->>>>>>> origin/alex
   model.ReservationRequest:
     properties:
       company:
@@ -174,7 +169,6 @@ definitions:
       unit:
         type: integer
     type: object
-host: localhost:8080
 info:
   contact: {}
   description: Ini adalah API server untuk aplikasi E-Meeting.
@@ -231,8 +225,6 @@ paths:
       summary: Register user baru
       tags:
       - Register
-<<<<<<< HEAD
-=======
   /reservation/calculation:
     get:
       consumes:
@@ -306,7 +298,6 @@ paths:
       summary: Reservation Calculation
       tags:
       - Reservation
->>>>>>> origin/alex
   /reservations:
     post:
       consumes:

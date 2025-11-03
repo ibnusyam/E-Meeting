@@ -90,8 +90,6 @@ const docTemplate = `{
                 }
             }
         },
-<<<<<<< HEAD
-=======
         "/reservation/calculation": {
             "get": {
                 "description": "Hitung total biaya reservasi berdasarkan room, snack, waktu, dan peserta",
@@ -199,7 +197,6 @@ const docTemplate = `{
                 }
             }
         },
->>>>>>> origin/alex
         "/reservations": {
             "post": {
                 "description": "Create a new meeting room reservation with room details and snacks",
@@ -342,8 +339,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-<<<<<<< HEAD
-=======
         "handler.ErrorResponse": {
             "type": "object",
             "properties": {
@@ -352,7 +347,6 @@ const docTemplate = `{
                 }
             }
         },
->>>>>>> origin/alex
         "model.ProfileUser": {
             "type": "object",
             "properties": {
@@ -405,8 +399,6 @@ const docTemplate = `{
                 }
             }
         },
-<<<<<<< HEAD
-=======
         "model.ReservationCalculationData": {
             "type": "object",
             "properties": {
@@ -418,6 +410,15 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/model.ReservationCalculationRooms"
                     }
+                },
+                "subTotalRoom": {
+                    "type": "number"
+                },
+                "subTotalSnack": {
+                    "type": "number"
+                },
+                "total": {
+                    "type": "number"
                 }
             }
         },
@@ -445,16 +446,13 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "subTotalRoom": {
-                    "type": "number",
-                    "format": "float64"
+                    "type": "number"
                 },
                 "subTotalSnack": {
-                    "type": "number",
-                    "format": "float64"
+                    "type": "number"
                 },
                 "total": {
-                    "type": "number",
-                    "format": "float64"
+                    "type": "number"
                 }
             }
         },
@@ -470,7 +468,7 @@ const docTemplate = `{
                 "endTime": {
                     "type": "string"
                 },
-                "imagesUrl": {
+                "imageURL": {
                     "type": "string"
                 },
                 "name": {
@@ -480,8 +478,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "pricePerHour": {
-                    "type": "number",
-                    "format": "float64"
+                    "type": "number"
                 },
                 "snack": {
                     "$ref": "#/definitions/model.ReservationCalculationSnack"
@@ -489,13 +486,11 @@ const docTemplate = `{
                 "startTime": {
                     "type": "string"
                 },
-                "subTotalRooms": {
-                    "type": "number",
-                    "format": "float64"
+                "subTotalRoom": {
+                    "type": "number"
                 },
                 "subTotalSnack": {
-                    "type": "number",
-                    "format": "float64"
+                    "type": "number"
                 },
                 "type": {
                     "type": "string"
@@ -515,13 +510,14 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "price": {
-                    "description": "unit string",
-                    "type": "number",
-                    "format": "float64"
+                    "type": "number"
+                },
+                "unit": {
+                    "description": "uncomment jika dipakai",
+                    "type": "string"
                 }
             }
         },
->>>>>>> origin/alex
         "model.ReservationRequest": {
             "type": "object",
             "properties": {
@@ -604,6 +600,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
+	Host:             "",
 	BasePath:         "",
 	Schemes:          []string{},
 	Title:            "E-Meeting API",

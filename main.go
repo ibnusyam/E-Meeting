@@ -22,7 +22,6 @@ import (
 // @title E-Meeting API
 // @version 1.0
 // @description Ini adalah API server untuk aplikasi E-Meeting.
-// @host localhost:8080
 // @BasePath
 // @BasePath
 func main() {
