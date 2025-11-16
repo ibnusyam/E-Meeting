@@ -13,6 +13,14 @@ type Room struct {
 	UpdatedAt time.Time
 }
 
+type CreateRoomRequest struct {
+	Name         string  `json:"name" example:"Meeting Room A"`
+	PricePerHour float64 `json:"pricePerHour" example:"150000"`
+	ImageURL     string  `json:"imageURL" example:"http://domain.com/temp/profile.png"`
+	Capacity     int     `json:"capacity" example:"10"`
+	Type         string  `json:"type" example:"small"`
+}
+
 type RoomReservationDetail struct {
 	Name         string    `json:"name"`
 	PricePerHour float64   `json:"pricePerHour"`
