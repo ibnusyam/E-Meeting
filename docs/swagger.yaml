@@ -143,6 +143,8 @@ definitions:
         type: number
       updatedAt:
         type: string
+      userId:
+        type: integer
     type: object
   model.ReservationHistoryResponse:
     properties:
@@ -236,6 +238,50 @@ info:
   title: E-Meeting API
   version: "1.0"
 paths:
+  /dashboard:
+    get:
+      consumes:
+      - application/json
+      description: Mengambil data statistik untuk dashboard berdasarkan rentang tanggal
+      parameters:
+      - description: Bearer <access_token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Tanggal mulai dalam format YYYY-MM-DD
+        in: query
+        name: startDate
+        required: true
+        type: string
+      - description: Tanggal akhir dalam format YYYY-MM-DD
+        in: query
+        name: endDate
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Mendapatkan data dashboard
+      tags:
+      - Dashboard
   /login:
     post:
       consumes:
@@ -265,6 +311,86 @@ paths:
       summary: Login
       tags:
       - Auth
+  /password/reset:
+    post:
+      consumes:
+      - application/json
+      description: Mengirim permintaan untuk mereset password dengan email
+      parameters:
+      - description: Email Request
+        in: body
+        name: request
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Request password reset
+      tags:
+      - Password Reset
+  /password/reset/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Mereset password menggunakan ID user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Password Reset Request
+        in: body
+        name: request
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Reset password by id
+      tags:
+      - Password Reset
   /profile/:id:
     get:
       consumes:
@@ -314,7 +440,7 @@ paths:
             type: object
       summary: Register user baru
       tags:
-      - Register
+      - Auth
   /reservation/calculation:
     get:
       consumes:
@@ -559,6 +685,103 @@ paths:
             additionalProperties: true
             type: object
       summary: Mendapatkan semua data room
+      tags:
+      - Rooms
+  /rooms/:id/reservation:
+    get:
+      consumes:
+      - application/json
+      description: Mengambil jadwal reservasi untuk room tertentu berdasarkan tanggal
+        mulai
+      parameters:
+      - description: Bearer <access_token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: ID Room
+        in: path
+        name: id_room
+        required: true
+        type: integer
+      - description: Tanggal mulai dalam format YYYY-MM-DD
+        in: query
+        name: startDate
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Mendapatkan jadwal reservasi room
+      tags:
+      - Room Reservation Schedules
+  /rooms/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Menghapus room dari sistem menggunakan ID room
+      parameters:
+      - description: Bearer <access_token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Room ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Menghapus room berdasarkan ID
       tags:
       - Rooms
   /snacks:

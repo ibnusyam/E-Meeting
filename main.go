@@ -112,6 +112,18 @@ func main() {
 	dashboardService := service.NewDashboardService(dashboardRepo)
 	dashboardHandler := handler.NewDashboardHandler(dashboardService)
 
+	passwordResetRepo := repository.NewPasswordResetRepository(db)
+	passwordResetService := service.NewPasswordResetService(passwordResetRepo)
+	passwordResetHandler := handler.NewPasswordResetHandler(passwordResetService)
+
+	passwordResetbyIdRepo := repository.NewPasswordResetRepository(db)
+	passwordResetbyIdService := service.NewPasswordResetService(passwordResetbyIdRepo)
+	passwordResetbyIdHandler := handler.NewPasswordResetHandler(passwordResetbyIdService)
+
+	deleteRoomRepo := repository.NewRoomRepository(db)
+	deleteRoomService := service.NewRoomService(deleteRoomRepo)
+	deleteRoomHandler := handler.NewRoomHandler(deleteRoomService)
+
 	//testing
 	allHandlers := &route.Handlers{
 		SnackHandler:                   snackHandler,
@@ -125,6 +137,9 @@ func main() {
 		DashboardHandler:               dashboardHandler,
 		ReservationCalculationHandler:  reservationCalculationHandler,
 		ReservationHistoryHandler:      reservationHistoryHandler,
+		PasswordResetHandler:           passwordResetHandler,
+		PasswordResetbyIdHandler:       passwordResetbyIdHandler,
+		DeleteRoomHandler:              deleteRoomHandler,
 		// handler lain di sini
 	}
 
