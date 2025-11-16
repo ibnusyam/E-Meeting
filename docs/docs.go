@@ -922,9 +922,14 @@ const docTemplate = `{
         },
         "/rooms/{id}": {
             "put": {
-                "description": "Update data room berdasarkan ID (Admin only)",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Update room data by ID (Admin only)",
                 "consumes": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "produces": [
                     "application/json"
@@ -949,18 +954,43 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Room update body",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.CreateRoomRequest"
-                        }
+                        "type": "string",
+                        "description": "Room name",
+                        "name": "name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "number",
+                        "description": "Price per hour",
+                        "name": "pricePerHour",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Capacity",
+                        "name": "capacity",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Room type (small, medium, large)",
+                        "name": "type",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Room image (PNG/JPG/JPEG, max 1MB)",
+                        "name": "image",
+                        "in": "formData"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "update room success",
+                        "description": "OK",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -969,7 +999,7 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "room type is not valid / capacity must be larger more than 0",
+                        "description": "Bad Request",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -978,7 +1008,7 @@ const docTemplate = `{
                         }
                     },
                     "401": {
-                        "description": "unauthorized",
+                        "description": "Unauthorized",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -987,7 +1017,7 @@ const docTemplate = `{
                         }
                     },
                     "404": {
-                        "description": "url not found",
+                        "description": "Not Found",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -996,7 +1026,7 @@ const docTemplate = `{
                         }
                     },
                     "500": {
-                        "description": "internal server error",
+                        "description": "Internal Server Error",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -1118,31 +1148,6 @@ const docTemplate = `{
                 },
                 "username": {
                     "type": "string"
-                }
-            }
-        },
-        "model.CreateRoomRequest": {
-            "type": "object",
-            "properties": {
-                "capacity": {
-                    "type": "integer",
-                    "example": 10
-                },
-                "imageURL": {
-                    "type": "string",
-                    "example": "http://domain.com/temp/profile.png"
-                },
-                "name": {
-                    "type": "string",
-                    "example": "Meeting Room A"
-                },
-                "pricePerHour": {
-                    "type": "number",
-                    "example": 150000
-                },
-                "type": {
-                    "type": "string",
-                    "example": "small"
                 }
             }
         },

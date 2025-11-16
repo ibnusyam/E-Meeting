@@ -11,24 +11,6 @@ definitions:
       username:
         type: string
     type: object
-  model.CreateRoomRequest:
-    properties:
-      capacity:
-        example: 10
-        type: integer
-      imageURL:
-        example: http://domain.com/temp/profile.png
-        type: string
-      name:
-        example: Meeting Room A
-        type: string
-      pricePerHour:
-        example: 150000
-        type: number
-      type:
-        example: small
-        type: string
-    type: object
   model.ErrorResponse:
     properties:
       message:
@@ -978,8 +960,8 @@ paths:
       - Rooms
     put:
       consumes:
-      - application/json
-      description: Update data room berdasarkan ID (Admin only)
+      - multipart/form-data
+      description: Update room data by ID (Admin only)
       parameters:
       - description: Bearer <access_token>
         in: header
@@ -991,46 +973,65 @@ paths:
         name: id
         required: true
         type: integer
-      - description: Room update body
-        in: body
-        name: request
+      - description: Room name
+        in: formData
+        name: name
         required: true
-        schema:
-          $ref: '#/definitions/model.CreateRoomRequest'
+        type: string
+      - description: Price per hour
+        in: formData
+        name: pricePerHour
+        required: true
+        type: number
+      - description: Capacity
+        in: formData
+        name: capacity
+        required: true
+        type: integer
+      - description: Room type (small, medium, large)
+        in: formData
+        name: type
+        required: true
+        type: string
+      - description: Room image (PNG/JPG/JPEG, max 1MB)
+        in: formData
+        name: image
+        type: file
       produces:
       - application/json
       responses:
         "200":
-          description: update room success
+          description: OK
           schema:
             additionalProperties:
               type: string
             type: object
         "400":
-          description: room type is not valid / capacity must be larger more than
-            0
+          description: Bad Request
           schema:
             additionalProperties:
               type: string
             type: object
         "401":
-          description: unauthorized
+          description: Unauthorized
           schema:
             additionalProperties:
               type: string
             type: object
         "404":
-          description: url not found
+          description: Not Found
           schema:
             additionalProperties:
               type: string
             type: object
         "500":
-          description: internal server error
+          description: Internal Server Error
           schema:
             additionalProperties:
               type: string
             type: object
+      security:
+      - BearerAuth: []
       summary: Update Room
       tags:
       - Rooms

@@ -80,6 +80,20 @@ func (repo *RoomRepository) GetAllRoom(name, roomType string, capacity, page, pa
 	return rooms, nil
 }
 
+func (r *RoomRepository) GetRoomByID(id int) (*model.Room, error) {
+	query := `SELECT id, name, price, images_url, capacity, type FROM rooms WHERE id = $1`
+
+	row := r.DB.QueryRow(query, id)
+
+	var room model.Room
+	err := row.Scan(&room.ID, &room.Name, &room.Price, &room.ImagesUrl, &room.Capacity, &room.Type)
+	if err != nil {
+		return nil, err
+	}
+
+	return &room, nil
+}
+
 // Update room
 func (r *RoomRepository) UpdateRoom(roomID int, room model.Room) error {
 	query := `
