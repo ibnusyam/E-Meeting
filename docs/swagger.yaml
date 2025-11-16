@@ -814,7 +814,7 @@ paths:
       - Rooms
     post:
       consumes:
-      - application/json
+      - multipart/form-data
       description: Create a new meeting room (Admin only)
       parameters:
       - description: Bearer <access_token>
@@ -822,12 +822,31 @@ paths:
         name: Authorization
         required: true
         type: string
-      - description: Room request body
-        in: body
-        name: request
+      - description: Room name
+        in: formData
+        name: name
         required: true
-        schema:
-          $ref: '#/definitions/model.CreateRoomRequest'
+        type: string
+      - description: Price per hour
+        in: formData
+        name: pricePerHour
+        required: true
+        type: number
+      - description: Capacity
+        in: formData
+        name: capacity
+        required: true
+        type: integer
+      - description: Room type (small, medium, large)
+        in: formData
+        name: type
+        required: true
+        type: string
+      - description: Image (PNG/JPG/JPEG) max 1MB
+        in: formData
+        name: image
+        required: true
+        type: file
       produces:
       - application/json
       responses:
@@ -838,20 +857,13 @@ paths:
               type: string
             type: object
         "400":
-          description: Bad Request - room type is not valid / capacity must be larger
-            more than 0
+          description: Bad Request
           schema:
             additionalProperties:
               type: string
             type: object
         "401":
           description: Unauthorized
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "404":
-          description: Not Found - url not found
           schema:
             additionalProperties:
               type: string

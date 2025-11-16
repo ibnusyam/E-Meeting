@@ -4,11 +4,10 @@ import (
 	"E-Meeting/internal/repository"
 	"E-Meeting/model"
 	"errors"
-	"net/url"
 )
 
 type RoomCreateService interface {
-	CreateRoom(req model.CreateRoomRequest) error
+	CreateRoom(req *model.CreateRoomRequest, imageURL string) error
 }
 
 type roomCreateService struct {
@@ -16,39 +15,31 @@ type roomCreateService struct {
 }
 
 func NewRoomCreateService(roomRepo repository.RoomCreateRepository) RoomCreateService {
-	return &roomCreateService{roomRepo}
+	return &roomCreateService{
+		roomRepo: roomRepo,
+	}
 }
 
-func (s *roomCreateService) CreateRoom(req model.CreateRoomRequest) error {
+func (s *roomCreateService) CreateRoom(req *model.CreateRoomRequest, imageURL string) error {
 
-	// Validate type
-	validTypes := map[string]bool{
-		"small":  true,
-		"medium": true,
-		"large":  true,
-	}
-
+	// valid type
+	validTypes := map[string]bool{"small": true, "medium": true, "large": true}
 	if !validTypes[req.Type] {
-		return errors.New("room type is not valid")
+		return errors.New("invalid room type")
 	}
 
-	// capacity must > 0
+	// capacity > 0
 	if req.Capacity <= 0 {
-		return errors.New("capacity must be larger more than 0")
+		return errors.New("capacity must be larger than 0")
 	}
 
-	// validate url
-	_, err := url.ParseRequestURI(req.ImageURL)
-	if err != nil {
-		return errors.New("url not found")
-	}
-
+	// create room model
 	room := model.Room{
 		Name:      req.Name,
 		Price:     req.PricePerHour,
-		ImagesUrl: req.ImageURL,
 		Capacity:  req.Capacity,
 		Type:      req.Type,
+		ImagesUrl: imageURL,
 	}
 
 	return s.roomRepo.CreateRoom(room)
