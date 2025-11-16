@@ -125,3 +125,48 @@ type RoomReservationResponse struct {
 		Status    string `json:"status"`
 	} `json:"schedules"`
 }
+
+// RESERVATION HISTORY
+type ReservationHistory struct {
+	ID            int                      `json:"id"`
+	Name          string                   `json:"name"`
+	PhoneNumber   float64                  `json:"phoneNumber"`
+	Company       string                   `json:"company"`
+	SubTotalSnack float64                  `json:"subTotalSnack"`
+	SubTotalRoom  float64                  `json:"subTotalRoom"`
+	Total         float64                  `json:"total"`
+	Status        string                   `json:"status"`
+	CreatedAt     time.Time                `json:"createdAt"`
+	UpdatedAt     time.Time                `json:"updatedAt"`
+	Rooms         []ReservationHistoryRoom `json:"rooms"`
+	UserID        int                      `json:"userId"`
+}
+
+type ReservationHistoryRoom struct {
+	ID         int     `json:"id"`
+	Price      float64 `json:"price"`
+	Name       string  `json:"name"`
+	Type       string  `json:"type"`
+	TotalRoom  float64 `json:"totalRoom"`
+	TotalSnack float64 `json:"totalSnack"`
+}
+
+type ReservationHistoryFilter struct {
+	StartDate string
+	EndDate   string
+	Type      string
+	Status    string
+	Page      int
+	PageSize  int
+	Username  string
+	UserID    int
+}
+
+type ReservationHistoryResponse struct {
+	Message   string               `json:"message"`
+	Data      []ReservationHistory `json:"data"`
+	Page      int                  `json:"page"`
+	PageSize  int                  `json:"pageSize"`
+	TotalPage int                  `json:"totalPage"`
+	TotalData int                  `json:"totalData"`
+}

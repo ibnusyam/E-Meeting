@@ -20,6 +20,15 @@ type LoginRequest struct {
 	Password string `json:"password"`
 }
 
+// @Summary Login
+// @Description Authenticate user and return access and refresh tokens
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Param request body LoginRequest true "Login Request"
+// @Success 200 {object} map[string]interface{} "Login Success"
+// @Failure 400 {object} map[string]string "Login Failed"
+// @Router /login [post]
 func (h *LoginHandler) Login(c echo.Context) error {
 	var req LoginRequest
 	if err := c.Bind(&req); err != nil {

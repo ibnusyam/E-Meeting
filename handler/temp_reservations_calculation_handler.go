@@ -29,15 +29,16 @@ type ErrorResponse struct {
 // @Tags         Reservation
 // @Accept       json
 // @Produce      json
-// @Param        room_id       query   int     true   "ID ruangan"
-// @Param        snack_id      query   int     false  "ID snack (optional)"
-// @Param        startTime     query   string  true   "Waktu mulai (format RFC3339)"
-// @Param        endTime       query   string  true   "Waktu selesai (format RFC3339)"
-// @Param        participant   query   int     true   "Jumlah peserta"
-// @Param        user_id       query   int     false  "ID user (optional)"
-// @Param        name          query   string  false  "Nama pemesan"
-// @Param        phoneNumber   query   string  false  "Nomor telepon pemesan"
-// @Param        company       query   string  false  "Nama perusahaan"
+// @Param        Authorization  header  string  true   "Bearer <access_token>"
+// @Param        room_id        query   int     true   "ID ruangan"  example(1)
+// @Param        snack_id       query   int     false  "ID snack (optional)"  example(2)
+// @Param        startTime      query   string  true   "Waktu mulai (format RFC3339)"  example(2023-01-01T10:00:00Z)
+// @Param        endTime        query   string  true   "Waktu selesai (format RFC3339)"  example(2023-01-01T12:00:00Z)
+// @Param        participant    query   int     true   "Jumlah peserta"  example(10)
+// @Param        user_id        query   int     false  "ID user (optional)"  example(123)
+// @Param        name           query   string  true  "Nama pemesan"  example(John Doe)
+// @Param        phoneNumber    query   string  true  "Nomor telepon pemesan"  example(+628123456789)
+// @Param        company        query   string  true  "Nama perusahaan"  example(Example Corp)
 // @Success      200  {object}  model.ReservationCalculationResponse  "Success"
 // @Failure      400  {object}  ErrorResponse  "Bad Request - over capacity / booking bentrok"
 // @Failure      401  {object}  ErrorResponse  "Unauthorized"

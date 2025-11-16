@@ -15,6 +15,50 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/login": {
+            "post": {
+                "description": "Authenticate user and return access and refresh tokens",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login",
+                "parameters": [
+                    {
+                        "description": "Login Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.LoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Login Success",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Login Failed",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/profile/:id": {
             "get": {
                 "description": "Mengambil data profile berdasarkan id",
@@ -90,8 +134,6 @@ const docTemplate = `{
                 }
             }
         },
-<<<<<<< HEAD
-=======
         "/reservation/calculation": {
             "get": {
                 "description": "Hitung total biaya reservasi berdasarkan room, snack, waktu, dan peserta",
@@ -107,7 +149,15 @@ const docTemplate = `{
                 "summary": "Reservation Calculation",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "Bearer \u003caccess_token\u003e",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "type": "integer",
+                        "example": 1,
                         "description": "ID ruangan",
                         "name": "room_id",
                         "in": "query",
@@ -115,12 +165,14 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
+                        "example": 2,
                         "description": "ID snack (optional)",
                         "name": "snack_id",
                         "in": "query"
                     },
                     {
                         "type": "string",
+                        "example": "2023-01-01T10:00:00Z",
                         "description": "Waktu mulai (format RFC3339)",
                         "name": "startTime",
                         "in": "query",
@@ -128,6 +180,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "example": "2023-01-01T12:00:00Z",
                         "description": "Waktu selesai (format RFC3339)",
                         "name": "endTime",
                         "in": "query",
@@ -135,6 +188,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
+                        "example": 10,
                         "description": "Jumlah peserta",
                         "name": "participant",
                         "in": "query",
@@ -142,27 +196,34 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
+                        "example": 123,
                         "description": "ID user (optional)",
                         "name": "user_id",
                         "in": "query"
                     },
                     {
                         "type": "string",
+                        "example": "John Doe",
                         "description": "Nama pemesan",
                         "name": "name",
-                        "in": "query"
+                        "in": "query",
+                        "required": true
                     },
                     {
                         "type": "string",
+                        "example": "+628123456789",
                         "description": "Nomor telepon pemesan",
                         "name": "phoneNumber",
-                        "in": "query"
+                        "in": "query",
+                        "required": true
                     },
                     {
                         "type": "string",
+                        "example": "Example Corp",
                         "description": "Nama perusahaan",
                         "name": "company",
-                        "in": "query"
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -199,7 +260,117 @@ const docTemplate = `{
                 }
             }
         },
->>>>>>> origin/alex
+        "/reservation/history": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get reservation history with filters and pagination",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Reservation"
+                ],
+                "summary": "Get reservation history",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer \u003caccess_token\u003e",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Start date filter (YYYY-MM-DD)",
+                        "name": "startDate",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "End date filter (YYYY-MM-DD)",
+                        "name": "endDate",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Room type filter (small, medium, large, hall)",
+                        "name": "type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Status filter",
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "Page size",
+                        "name": "pageSize",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.ReservationHistoryResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request - room type is not valid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - url not found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/reservations": {
             "post": {
                 "description": "Create a new meeting room reservation with room details and snacks",
@@ -214,6 +385,13 @@ const docTemplate = `{
                 ],
                 "summary": "Create a new reservation",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer \u003cJWT Token\u003e",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "Reservation Request",
                         "name": "request",
@@ -342,8 +520,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-<<<<<<< HEAD
-=======
         "handler.ErrorResponse": {
             "type": "object",
             "properties": {
@@ -352,7 +528,17 @@ const docTemplate = `{
                 }
             }
         },
->>>>>>> origin/alex
+        "handler.LoginRequest": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "model.ProfileUser": {
             "type": "object",
             "properties": {
@@ -405,8 +591,6 @@ const docTemplate = `{
                 }
             }
         },
-<<<<<<< HEAD
-=======
         "model.ReservationCalculationData": {
             "type": "object",
             "properties": {
@@ -445,16 +629,13 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "subTotalRoom": {
-                    "type": "number",
-                    "format": "float64"
+                    "type": "number"
                 },
                 "subTotalSnack": {
-                    "type": "number",
-                    "format": "float64"
+                    "type": "number"
                 },
                 "total": {
-                    "type": "number",
-                    "format": "float64"
+                    "type": "number"
                 }
             }
         },
@@ -470,7 +651,7 @@ const docTemplate = `{
                 "endTime": {
                     "type": "string"
                 },
-                "imagesUrl": {
+                "imageURL": {
                     "type": "string"
                 },
                 "name": {
@@ -480,8 +661,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "pricePerHour": {
-                    "type": "number",
-                    "format": "float64"
+                    "type": "number"
                 },
                 "snack": {
                     "$ref": "#/definitions/model.ReservationCalculationSnack"
@@ -489,13 +669,11 @@ const docTemplate = `{
                 "startTime": {
                     "type": "string"
                 },
-                "subTotalRooms": {
-                    "type": "number",
-                    "format": "float64"
+                "subTotalRoom": {
+                    "type": "number"
                 },
                 "subTotalSnack": {
-                    "type": "number",
-                    "format": "float64"
+                    "type": "number"
                 },
                 "type": {
                     "type": "string"
@@ -515,13 +693,104 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "price": {
-                    "description": "unit string",
-                    "type": "number",
-                    "format": "float64"
+                    "type": "number"
+                },
+                "unit": {
+                    "description": "uncomment jika dipakai",
+                    "type": "string"
                 }
             }
         },
->>>>>>> origin/alex
+        "model.ReservationHistory": {
+            "type": "object",
+            "properties": {
+                "company": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phoneNumber": {
+                    "type": "number"
+                },
+                "rooms": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.ReservationHistoryRoom"
+                    }
+                },
+                "status": {
+                    "type": "string"
+                },
+                "subTotalRoom": {
+                    "type": "number"
+                },
+                "subTotalSnack": {
+                    "type": "number"
+                },
+                "total": {
+                    "type": "number"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.ReservationHistoryResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.ReservationHistory"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "pageSize": {
+                    "type": "integer"
+                },
+                "totalData": {
+                    "type": "integer"
+                },
+                "totalPage": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.ReservationHistoryRoom": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "totalRoom": {
+                    "type": "number"
+                },
+                "totalSnack": {
+                    "type": "number"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
         "model.ReservationRequest": {
             "type": "object",
             "properties": {

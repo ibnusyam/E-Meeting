@@ -11,13 +11,17 @@ var accessSecret = []byte(os.Getenv("ACCESS_SECRET_KEY"))
 var refreshSecret = []byte(os.Getenv("REFRESH_SECRET_KEY"))
 
 type JWTClaim struct {
+	UserID   int    `json:"user_id"`
 	Username string `json:"username"`
+	Role     string `json:"role"`
 	jwt.RegisteredClaims
 }
 
-func GenerateAccessToken(username string) (string, error) {
+func GenerateAccessToken(id int, username string, role string) (string, error) {
 	claims := JWTClaim{
+		UserID:   id,
 		Username: username,
+		Role:     role,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(15 * time.Minute)),
 		},
@@ -26,9 +30,11 @@ func GenerateAccessToken(username string) (string, error) {
 	return token.SignedString(accessSecret)
 }
 
-func GenerateRefreshToken(username string) (string, error) {
+func GenerateRefreshToken(id int, username string, role string) (string, error) {
 	claims := JWTClaim{
+		UserID:   id,
 		Username: username,
+		Role:     role,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(7 * 24 * time.Hour)),
 		},
@@ -49,5 +55,6 @@ func ValidateAccessToken(tokenString string) (*JWTClaim, error) {
 	if !ok || !token.Valid {
 		return nil, err
 	}
+
 	return claims, nil
 }

@@ -96,6 +96,10 @@ func main() {
 	reservationCalculationService := service.NewReservationCalculationService(reservationCalculationRepo)
 	reservationCalculationHandler := handler.NewReservationCalculationHandler(reservationCalculationService)
 
+	reservationHistoryRepo := repository.NewReservationHistoryRepository(db)
+	reservationHistoryService := service.NewReservationHistoryService(reservationHistoryRepo)
+	reservationHistoryHandler := handler.NewReservationHistoryHandler(reservationHistoryService)
+
 	const tempDir = "public/temp"
 	const uploadDir = "public/uploads"
 	const baseURL = "http://localhost:8080/assets"
@@ -120,6 +124,7 @@ func main() {
 		UploadHandler:                  uploadHandler,
 		DashboardHandler:               dashboardHandler,
 		ReservationCalculationHandler:  reservationCalculationHandler,
+		ReservationHistoryHandler:      reservationHistoryHandler,
 		// handler lain di sini
 	}
 

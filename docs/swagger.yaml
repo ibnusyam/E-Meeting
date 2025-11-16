@@ -1,12 +1,16 @@
 definitions:
-<<<<<<< HEAD
-=======
   handler.ErrorResponse:
     properties:
       message:
         type: string
     type: object
->>>>>>> origin/alex
+  handler.LoginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
   model.ProfileUser:
     properties:
       createdAt:
@@ -41,8 +45,6 @@ definitions:
       username:
         type: string
     type: object
-<<<<<<< HEAD
-=======
   model.ReservationCalculationData:
     properties:
       personalData:
@@ -68,13 +70,10 @@ definitions:
       message:
         type: string
       subTotalRoom:
-        format: float64
         type: number
       subTotalSnack:
-        format: float64
         type: number
       total:
-        format: float64
         type: number
     type: object
   model.ReservationCalculationRooms:
@@ -85,24 +84,21 @@ definitions:
         type: integer
       endTime:
         type: string
-      imagesUrl:
+      imageURL:
         type: string
       name:
         type: string
       participant:
         type: integer
       pricePerHour:
-        format: float64
         type: number
       snack:
         $ref: '#/definitions/model.ReservationCalculationSnack'
       startTime:
         type: string
-      subTotalRooms:
-        format: float64
+      subTotalRoom:
         type: number
       subTotalSnack:
-        format: float64
         type: number
       type:
         type: string
@@ -116,11 +112,70 @@ definitions:
       name:
         type: string
       price:
-        description: unit string
-        format: float64
         type: number
+      unit:
+        description: uncomment jika dipakai
+        type: string
     type: object
->>>>>>> origin/alex
+  model.ReservationHistory:
+    properties:
+      company:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      phoneNumber:
+        type: number
+      rooms:
+        items:
+          $ref: '#/definitions/model.ReservationHistoryRoom'
+        type: array
+      status:
+        type: string
+      subTotalRoom:
+        type: number
+      subTotalSnack:
+        type: number
+      total:
+        type: number
+      updatedAt:
+        type: string
+    type: object
+  model.ReservationHistoryResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/model.ReservationHistory'
+        type: array
+      message:
+        type: string
+      page:
+        type: integer
+      pageSize:
+        type: integer
+      totalData:
+        type: integer
+      totalPage:
+        type: integer
+    type: object
+  model.ReservationHistoryRoom:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      price:
+        type: number
+      totalRoom:
+        type: number
+      totalSnack:
+        type: number
+      type:
+        type: string
+    type: object
   model.ReservationRequest:
     properties:
       company:
@@ -181,6 +236,35 @@ info:
   title: E-Meeting API
   version: "1.0"
 paths:
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate user and return access and refresh tokens
+      parameters:
+      - description: Login Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Login Success
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Login Failed
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Login
+      tags:
+      - Auth
   /profile/:id:
     get:
       consumes:
@@ -231,8 +315,6 @@ paths:
       summary: Register user baru
       tags:
       - Register
-<<<<<<< HEAD
-=======
   /reservation/calculation:
     get:
       consumes:
@@ -240,45 +322,62 @@ paths:
       description: Hitung total biaya reservasi berdasarkan room, snack, waktu, dan
         peserta
       parameters:
+      - description: Bearer <access_token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: ID ruangan
+        example: 1
         in: query
         name: room_id
         required: true
         type: integer
       - description: ID snack (optional)
+        example: 2
         in: query
         name: snack_id
         type: integer
       - description: Waktu mulai (format RFC3339)
+        example: "2023-01-01T10:00:00Z"
         in: query
         name: startTime
         required: true
         type: string
       - description: Waktu selesai (format RFC3339)
+        example: "2023-01-01T12:00:00Z"
         in: query
         name: endTime
         required: true
         type: string
       - description: Jumlah peserta
+        example: 10
         in: query
         name: participant
         required: true
         type: integer
       - description: ID user (optional)
+        example: 123
         in: query
         name: user_id
         type: integer
       - description: Nama pemesan
+        example: John Doe
         in: query
         name: name
+        required: true
         type: string
       - description: Nomor telepon pemesan
+        example: "+628123456789"
         in: query
         name: phoneNumber
+        required: true
         type: string
       - description: Nama perusahaan
+        example: Example Corp
         in: query
         name: company
+        required: true
         type: string
       produces:
       - application/json
@@ -306,13 +405,90 @@ paths:
       summary: Reservation Calculation
       tags:
       - Reservation
->>>>>>> origin/alex
+  /reservation/history:
+    get:
+      consumes:
+      - application/json
+      description: Get reservation history with filters and pagination
+      parameters:
+      - description: Bearer <access_token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Start date filter (YYYY-MM-DD)
+        in: query
+        name: startDate
+        type: string
+      - description: End date filter (YYYY-MM-DD)
+        in: query
+        name: endDate
+        type: string
+      - description: Room type filter (small, medium, large, hall)
+        in: query
+        name: type
+        type: string
+      - description: Status filter
+        in: query
+        name: status
+        type: string
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Page size
+        in: query
+        name: pageSize
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ReservationHistoryResponse'
+        "400":
+          description: Bad Request - room type is not valid
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found - url not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get reservation history
+      tags:
+      - Reservation
   /reservations:
     post:
       consumes:
       - application/json
       description: Create a new meeting room reservation with room details and snacks
       parameters:
+      - description: Bearer <JWT Token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: Reservation Request
         in: body
         name: request
