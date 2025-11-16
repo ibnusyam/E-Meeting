@@ -132,6 +132,10 @@ func main() {
 	createRoomService := service.NewRoomCreateService(createRoomRepo)
 	createRoomHandler := handler.NewRoomCreateHandler(createRoomService)
 
+	updateRoomRepo := repository.NewRoomRepository(db)
+	updateRoomService := service.NewRoomService(updateRoomRepo)
+	updateRoomHandler := handler.NewRoomHandler(updateRoomService)
+
 	//testing
 	allHandlers := &route.Handlers{
 		SnackHandler:                   snackHandler,
@@ -150,6 +154,7 @@ func main() {
 		PasswordResetbyIdHandler:       passwordResetbyIdHandler,
 		DeleteRoomHandler:              deleteRoomHandler,
 		CreateRoomHandler:              createRoomHandler,
+		UpdateRoomHandler:              updateRoomHandler,
 		// handler lain di sini
 	}
 

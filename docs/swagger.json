@@ -117,7 +117,7 @@
                 }
             }
         },
-        "/password/reset": {
+        "/password/reset/": {
             "post": {
                 "description": "Mengirim permintaan untuk mereset password dengan email",
                 "consumes": [
@@ -138,22 +138,24 @@
                         "required": true,
                         "schema": {
                             "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
+                            "properties": {
+                                "email": {
+                                    "type": "string"
+                                }
                             }
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Update Password success",
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
                         }
                     },
-                    "400": {
-                        "description": "Bad Request",
+                    "404": {
+                        "description": "email not found",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -185,7 +187,7 @@
                 "tags": [
                     "Password Reset"
                 ],
-                "summary": "Reset password by id",
+                "summary": "Reset password",
                 "parameters": [
                     {
                         "type": "integer",
@@ -201,15 +203,20 @@
                         "required": true,
                         "schema": {
                             "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
+                            "properties": {
+                                "confirm_password": {
+                                    "type": "string"
+                                },
+                                "new_password": {
+                                    "type": "string"
+                                }
                             }
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Update Password success",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -218,7 +225,7 @@
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "password confirmation is not match",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -890,6 +897,91 @@
             }
         },
         "/rooms/{id}": {
+            "put": {
+                "description": "Update data room berdasarkan ID (Admin only)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rooms"
+                ],
+                "summary": "Update Room",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer \u003caccess_token\u003e",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Room ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Room update body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.CreateRoomRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "update room success",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "room type is not valid / capacity must be larger more than 0",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "url not found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
             "delete": {
                 "description": "Menghapus room dari sistem menggunakan ID room",
                 "consumes": [

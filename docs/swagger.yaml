@@ -392,7 +392,7 @@ paths:
       summary: Login
       tags:
       - Auth
-  /password/reset:
+  /password/reset/:
     post:
       consumes:
       - application/json
@@ -403,19 +403,20 @@ paths:
         name: request
         required: true
         schema:
-          additionalProperties:
-            type: string
+          properties:
+            email:
+              type: string
           type: object
       produces:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Update Password success
           schema:
             additionalProperties: true
             type: object
-        "400":
-          description: Bad Request
+        "404":
+          description: email not found
           schema:
             additionalProperties:
               type: string
@@ -445,20 +446,23 @@ paths:
         name: request
         required: true
         schema:
-          additionalProperties:
-            type: string
+          properties:
+            confirm_password:
+              type: string
+            new_password:
+              type: string
           type: object
       produces:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Update Password success
           schema:
             additionalProperties:
               type: string
             type: object
         "400":
-          description: Bad Request
+          description: password confirmation is not match
           schema:
             additionalProperties:
               type: string
@@ -469,7 +473,7 @@ paths:
             additionalProperties:
               type: string
             type: object
-      summary: Reset password by id
+      summary: Reset password
       tags:
       - Password Reset
   /profile/:id:
@@ -958,6 +962,64 @@ paths:
               type: string
             type: object
       summary: Menghapus room berdasarkan ID
+      tags:
+      - Rooms
+    put:
+      consumes:
+      - application/json
+      description: Update data room berdasarkan ID (Admin only)
+      parameters:
+      - description: Bearer <access_token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Room ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Room update body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateRoomRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: update room success
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: room type is not valid / capacity must be larger more than
+            0
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: url not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update Room
       tags:
       - Rooms
   /snacks:

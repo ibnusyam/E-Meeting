@@ -80,6 +80,44 @@ func (repo *RoomRepository) GetAllRoom(name, roomType string, capacity, page, pa
 	return rooms, nil
 }
 
+// Update room
+func (r *RoomRepository) UpdateRoom(roomID int, room model.Room) error {
+	query := `
+		UPDATE rooms SET 
+			name = $1,
+			capacity = $2,
+			price = $3,
+			type = $4,
+			images_url = $5,
+			updated_at = NOW()
+		WHERE id = $6
+	`
+
+	result, err := r.DB.Exec(query,
+		room.Name,
+		room.Capacity,
+		room.Price,
+		room.Type,
+		room.ImagesUrl,
+		roomID,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	affected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if affected == 0 {
+		return sql.ErrNoRows
+	}
+
+	return nil
+}
+
 // Cek apakah room sedang dipakai
 func (r *RoomRepository) IsRoomUsed(roomID int) (bool, error) {
 	var count int
