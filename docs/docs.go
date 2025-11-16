@@ -753,7 +753,7 @@ const docTemplate = `{
                 ],
                 "description": "Create a new meeting room (Admin only)",
                 "consumes": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "produces": [
                     "application/json"
@@ -771,13 +771,39 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Room request body",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.CreateRoomRequest"
-                        }
+                        "type": "string",
+                        "description": "Room name",
+                        "name": "name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "number",
+                        "description": "Price per hour",
+                        "name": "pricePerHour",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Capacity",
+                        "name": "capacity",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Room type (small, medium, large)",
+                        "name": "type",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Image (PNG/JPG/JPEG) max 1MB",
+                        "name": "image",
+                        "in": "formData",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -791,7 +817,7 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Bad Request - room type is not valid / capacity must be larger more than 0",
+                        "description": "Bad Request",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -801,15 +827,6 @@ const docTemplate = `{
                     },
                     "401": {
                         "description": "Unauthorized",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found - url not found",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
