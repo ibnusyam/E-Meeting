@@ -1,8 +1,7 @@
 package utils
 
 import (
-	"crypto/rand"
-	"encoding/hex"
+	"errors"
 	"os"
 	"time"
 
@@ -61,11 +60,33 @@ func ValidateAccessToken(tokenString string) (*JWTClaim, error) {
 	return claims, nil
 }
 
-func GenerateToken() (string, error) {
-	bytes := make([]byte, 16) // 16 byte = 32 hex karakter
-	_, err := rand.Read(bytes)
-	if err != nil {
-		return "", err
+// reset token untuk password reset
+var resetSecret = []byte(os.Getenv("RESET_SECRET_KEY"))
+
+func GeneratePasswordResetToken(userID int, email string) (string, error) {
+	claims := jwt.MapClaims{
+		"user_id": userID,
+		"email":   email,
+		"type":    "password_reset",
+		"exp":     time.Now().Add(15 * time.Minute).Unix(),
 	}
-	return hex.EncodeToString(bytes), nil
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString(resetSecret)
+}
+
+func ValidatePasswordResetToken(tokenString string) (jwt.MapClaims, error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		return resetSecret, nil
+	})
+	if err != nil || !token.Valid {
+		return nil, errors.New("invalid token")
+	}
+
+	claims := token.Claims.(jwt.MapClaims)
+	if claims["type"] != "password_reset" {
+		return nil, errors.New("invalid token type")
+	}
+
+	return claims, nil
 }
