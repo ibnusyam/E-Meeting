@@ -5,6 +5,7 @@ import (
 	"E-Meeting/model"
 	"database/sql"
 	"errors"
+	"net/url"
 )
 
 type RoomService struct {
@@ -27,6 +28,51 @@ func (s *RoomService) GetAllRooms(name, roomType string, capacity, page, pageSiz
 	}
 
 	return rooms, err
+}
+
+func (s *RoomService) UpdateRoom(id int, req model.CreateRoomRequest) error {
+
+	// Validate type
+	validTypes := map[string]bool{
+		"small":  true,
+		"medium": true,
+		"large":  true,
+	}
+
+	if !validTypes[req.Type] {
+		return errors.New("room type is not valid")
+	}
+
+	// validate capacity > 0
+	if req.Capacity <= 0 {
+		return errors.New("capacity must be larger more than 0")
+	}
+
+	// validate image URL
+	_, err := url.ParseRequestURI(req.ImageURL)
+	if err != nil {
+		return errors.New("url not found")
+	}
+
+	// mapping request → model
+	room := model.Room{
+		Name:      req.Name,
+		Price:     req.PricePerHour,
+		ImagesUrl: req.ImageURL,
+		Capacity:  req.Capacity,
+		Type:      req.Type,
+	}
+
+	// call repository
+	err = s.Repo.UpdateRoom(id, room)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return sql.ErrNoRows // supaya handler bisa return 404
+		}
+		return err
+	}
+
+	return nil
 }
 
 // cek jika room sudah ada reservasi atau belum

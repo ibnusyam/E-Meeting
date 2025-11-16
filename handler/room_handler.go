@@ -2,6 +2,7 @@ package handler
 
 import (
 	"E-Meeting/internal/service"
+	"E-Meeting/model"
 	"database/sql"
 	"net/http"
 	"strconv"
@@ -69,6 +70,74 @@ func (h *RoomHandler) GetAllRooms(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, rooms)
+}
+
+// UpdateRoom godoc
+// @Summary      Update Room
+// @Description  Update data room berdasarkan ID (Admin only)
+// @Tags         Rooms
+// @Accept       json
+// @Produce      json
+// @Param        Authorization header string true "Bearer <access_token>"
+// @Param        id path int true "Room ID"
+// @Param        request body model.CreateRoomRequest true "Room update body"
+// @Success      200 {object} map[string]string "update room success"
+// @Failure      400 {object} map[string]string "room type is not valid / capacity must be larger more than 0"
+// @Failure      401 {object} map[string]string "unauthorized"
+// @Failure      404 {object} map[string]string "url not found"
+// @Failure      500 {object} map[string]string "internal server error"
+// @Router       /rooms/{id} [put]
+func (h *RoomHandler) UpdateRoom(c echo.Context) error {
+
+	// role check
+	role := c.Get("role")
+	if role != "admin" {
+		return c.JSON(http.StatusUnauthorized, echo.Map{
+			"message": "unauthorized",
+		})
+	}
+
+	// parse room id
+	idParam := c.Param("id")
+	roomID, err := strconv.Atoi(idParam)
+	if err != nil {
+		return c.JSON(http.StatusNotFound, echo.Map{
+			"message": "url not found",
+		})
+	}
+
+	// bind payload
+	var req model.CreateRoomRequest
+	if err := c.Bind(&req); err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": "bad request",
+		})
+	}
+
+	// service update
+	err = h.Service.UpdateRoom(roomID, req)
+	if err != nil {
+
+		switch err.Error() {
+		case "room type is not valid", "capacity must be larger more than 0":
+			return c.JSON(http.StatusBadRequest, echo.Map{"message": err.Error()})
+
+		case "url not found":
+			return c.JSON(http.StatusNotFound, echo.Map{"message": err.Error()})
+		}
+
+		if err == sql.ErrNoRows {
+			return c.JSON(http.StatusNotFound, echo.Map{"message": "url not found"})
+		}
+
+		return c.JSON(http.StatusInternalServerError, echo.Map{
+			"message": "internal server error",
+		})
+	}
+
+	return c.JSON(http.StatusOK, echo.Map{
+		"message": "update room success",
+	})
 }
 
 // DeleteRoom godoc
