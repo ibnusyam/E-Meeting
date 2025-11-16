@@ -50,32 +50,7 @@ type ReservationRequest struct {
 	Rooms       []RoomRequest `json:"rooms"`
 }
 
-// // RoomRequest is used for API input (room details in request)
-// type RoomRequest struct {
-// 	ID          int    `json:"id" example:"1"`
-// 	StartTime   string `json:"startTime" example:"2025-10-01 10:00:00"`
-// 	EndTime     string `json:"endTime" example:"2025-10-01 12:00:00"`
-// 	Participant int    `json:"participant" example:"8"`
-// 	SnackID     int    `json:"snackID" example:"3"`
-// }
-
-// // Room represents room master data
-// type Room struct {
-// 	ID        int
-// 	Name      string
-// 	Capacity  int
-// 	Price     float64
-// 	Type      string
-// 	ImagesUrl string
-// }
-
-// // Snack represents snack master data
-// type Snack struct {
-// 	ID    int
-// 	Name  string
-// 	Price float64
-// }
-
+// RESERVATION CALCULATION ENDPOINT MODELS
 type ReservationCalculationSnack struct {
 	ID       int     `json:"id"`
 	Name     string  `json:"name"`
@@ -118,11 +93,8 @@ type ReservationCalculationPersonalData struct {
 }
 
 type ReservationCalculationData struct {
-	Rooms         []ReservationCalculationRooms      `json:"rooms"`
-	PersonalData  ReservationCalculationPersonalData `json:"personalData"`
-	SubTotalRoom  float64                            `json:"subTotalRoom"`
-	SubTotalSnack float64                            `json:"subTotalSnack"`
-	Total         float64                            `json:"total"`
+	Rooms        []ReservationCalculationRooms      `json:"rooms"`
+	PersonalData ReservationCalculationPersonalData `json:"personalData"`
 }
 
 type ReservationCalculationResponse struct {
@@ -152,4 +124,49 @@ type RoomReservationResponse struct {
 		EndTime   string `json:"endTime"`
 		Status    string `json:"status"`
 	} `json:"schedules"`
+}
+
+// RESERVATION HISTORY
+type ReservationHistory struct {
+	ID            int                      `json:"id"`
+	Name          string                   `json:"name"`
+	PhoneNumber   float64                  `json:"phoneNumber"`
+	Company       string                   `json:"company"`
+	SubTotalSnack float64                  `json:"subTotalSnack"`
+	SubTotalRoom  float64                  `json:"subTotalRoom"`
+	Total         float64                  `json:"total"`
+	Status        string                   `json:"status"`
+	CreatedAt     time.Time                `json:"createdAt"`
+	UpdatedAt     time.Time                `json:"updatedAt"`
+	Rooms         []ReservationHistoryRoom `json:"rooms"`
+	UserID        int                      `json:"userId"`
+}
+
+type ReservationHistoryRoom struct {
+	ID         int     `json:"id"`
+	Price      float64 `json:"price"`
+	Name       string  `json:"name"`
+	Type       string  `json:"type"`
+	TotalRoom  float64 `json:"totalRoom"`
+	TotalSnack float64 `json:"totalSnack"`
+}
+
+type ReservationHistoryFilter struct {
+	StartDate string
+	EndDate   string
+	Type      string
+	Status    string
+	Page      int
+	PageSize  int
+	Username  string
+	UserID    int
+}
+
+type ReservationHistoryResponse struct {
+	Message   string               `json:"message"`
+	Data      []ReservationHistory `json:"data"`
+	Page      int                  `json:"page"`
+	PageSize  int                  `json:"pageSize"`
+	TotalPage int                  `json:"totalPage"`
+	TotalData int                  `json:"totalData"`
 }

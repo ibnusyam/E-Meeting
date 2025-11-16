@@ -22,8 +22,8 @@ type UserRepositoryImpl struct {
 
 func (r *userRepository) GetByUsername(username string) (*model.User, error) {
 	user := &model.User{}
-	query := `SELECT id, username, password FROM users WHERE username = $1`
-	err := r.DB.QueryRow(query, username).Scan(&user.ID, &user.Username, &user.Password)
+	query := `SELECT id, username, password, role FROM users WHERE username = $1`
+	err := r.DB.QueryRow(query, username).Scan(&user.ID, &user.Username, &user.Password, &user.Role)
 	if err != nil {
 		return nil, err
 	}

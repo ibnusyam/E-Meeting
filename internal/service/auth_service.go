@@ -26,12 +26,12 @@ func (s *AuthService) Login(username, password string) (string, string, error) {
 		return "", "", errors.New("login failed")
 	}
 
-	accessToken, err := utils.GenerateAccessToken(username)
+	accessToken, err := utils.GenerateAccessToken(user.ID, user.Username, user.Role)
 	if err != nil {
 		return "", "", err
 	}
 
-	refreshToken, err := utils.GenerateRefreshToken(username)
+	refreshToken, err := utils.GenerateRefreshToken(user.ID, user.Username, user.Role)
 	if err != nil {
 		return "", "", err
 	}
