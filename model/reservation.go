@@ -170,3 +170,26 @@ type ReservationHistoryResponse struct {
 	TotalPage int                  `json:"totalPage"`
 	TotalData int                  `json:"totalData"`
 }
+
+type PersonalData struct {
+	Name        string `json:"name"`
+	PhoneNumber string `json:"phoneNumber"`
+	Company     string `json:"company"`
+}
+
+type ReservationData struct {
+	Rooms         []RoomReservationDetail `json:"rooms"`
+	PersonalData  PersonalData            `json:"personalData"`
+	SubTotalSnack float64                 `json:"subTotalSnack"`
+	SubTotalRoom  float64                 `json:"subTotalRoom"`
+	Total         float64                 `json:"total"`
+}
+
+type ErrorResponse struct {
+	Message string `json:"message"`
+}
+
+type ReservationResponse struct {
+	Message string          `json:"message"`
+	Data    ReservationData `json:"data"`
+}

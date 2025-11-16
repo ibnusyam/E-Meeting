@@ -557,6 +557,67 @@ const docTemplate = `{
                 }
             }
         },
+        "/reservation/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get detailed reservation information by reservation ID. Admin can view all reservations, customers can only view their own reservations.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Reservations"
+                ],
+                "summary": "Get reservation by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Reservation ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.ReservationResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid reservation ID",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid token or insufficient permissions",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Reservation not found",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/reservations": {
             "post": {
                 "description": "Create a new meeting room reservation with room details and snacks",
@@ -868,6 +929,28 @@ const docTemplate = `{
                 }
             }
         },
+        "model.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.PersonalData": {
+            "type": "object",
+            "properties": {
+                "company": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phoneNumber": {
+                    "type": "string"
+                }
+            }
+        },
         "model.ProfileUser": {
             "type": "object",
             "properties": {
@@ -1030,6 +1113,29 @@ const docTemplate = `{
                 }
             }
         },
+        "model.ReservationData": {
+            "type": "object",
+            "properties": {
+                "personalData": {
+                    "$ref": "#/definitions/model.PersonalData"
+                },
+                "rooms": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.RoomReservationDetail"
+                    }
+                },
+                "subTotalRoom": {
+                    "type": "number"
+                },
+                "subTotalSnack": {
+                    "type": "number"
+                },
+                "total": {
+                    "type": "number"
+                }
+            }
+        },
         "model.ReservationHistory": {
             "type": "object",
             "properties": {
@@ -1154,6 +1260,17 @@ const docTemplate = `{
                 }
             }
         },
+        "model.ReservationResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/model.ReservationData"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "model.RoomRequest": {
             "type": "object",
             "properties": {
@@ -1176,6 +1293,47 @@ const docTemplate = `{
                 "startTime": {
                     "type": "string",
                     "example": "2025-10-17T12:00:00Z"
+                }
+            }
+        },
+        "model.RoomReservationDetail": {
+            "type": "object",
+            "properties": {
+                "capacity": {
+                    "type": "integer"
+                },
+                "duration": {
+                    "type": "integer"
+                },
+                "endTime": {
+                    "type": "string"
+                },
+                "imageURL": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "participant": {
+                    "type": "integer"
+                },
+                "pricePerHour": {
+                    "type": "number"
+                },
+                "snack": {
+                    "$ref": "#/definitions/model.Snack"
+                },
+                "startTime": {
+                    "type": "string"
+                },
+                "totalRoom": {
+                    "type": "number"
+                },
+                "totalSnack": {
+                    "type": "number"
+                },
+                "type": {
+                    "type": "string"
                 }
             }
         },

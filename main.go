@@ -100,6 +100,10 @@ func main() {
 	reservationHistoryService := service.NewReservationHistoryService(reservationHistoryRepo)
 	reservationHistoryHandler := handler.NewReservationHistoryHandler(reservationHistoryService)
 
+	reservationDetailRepo := repository.NewReservationDetailRepository(db)
+	reservationDetailService := service.NewReservationDetailService(reservationDetailRepo)
+	reservationDetailHandler := handler.NewReservationDetailHandler(reservationDetailService)
+
 	const tempDir = "public/temp"
 	const uploadDir = "public/uploads"
 	const baseURL = "http://localhost:8080/assets"
@@ -137,6 +141,7 @@ func main() {
 		DashboardHandler:               dashboardHandler,
 		ReservationCalculationHandler:  reservationCalculationHandler,
 		ReservationHistoryHandler:      reservationHistoryHandler,
+		ReservationDetailHandler:       reservationDetailHandler,
 		PasswordResetHandler:           passwordResetHandler,
 		PasswordResetbyIdHandler:       passwordResetbyIdHandler,
 		DeleteRoomHandler:              deleteRoomHandler,

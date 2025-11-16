@@ -11,6 +11,20 @@ definitions:
       username:
         type: string
     type: object
+  model.ErrorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  model.PersonalData:
+    properties:
+      company:
+        type: string
+      name:
+        type: string
+      phoneNumber:
+        type: string
+    type: object
   model.ProfileUser:
     properties:
       createdAt:
@@ -117,6 +131,21 @@ definitions:
         description: uncomment jika dipakai
         type: string
     type: object
+  model.ReservationData:
+    properties:
+      personalData:
+        $ref: '#/definitions/model.PersonalData'
+      rooms:
+        items:
+          $ref: '#/definitions/model.RoomReservationDetail'
+        type: array
+      subTotalRoom:
+        type: number
+      subTotalSnack:
+        type: number
+      total:
+        type: number
+    type: object
   model.ReservationHistory:
     properties:
       company:
@@ -200,6 +229,13 @@ definitions:
         example: "1"
         type: string
     type: object
+  model.ReservationResponse:
+    properties:
+      data:
+        $ref: '#/definitions/model.ReservationData'
+      message:
+        type: string
+    type: object
   model.RoomRequest:
     properties:
       endTime:
@@ -216,6 +252,33 @@ definitions:
         type: integer
       startTime:
         example: "2025-10-17T12:00:00Z"
+        type: string
+    type: object
+  model.RoomReservationDetail:
+    properties:
+      capacity:
+        type: integer
+      duration:
+        type: integer
+      endTime:
+        type: string
+      imageURL:
+        type: string
+      name:
+        type: string
+      participant:
+        type: integer
+      pricePerHour:
+        type: number
+      snack:
+        $ref: '#/definitions/model.Snack'
+      startTime:
+        type: string
+      totalRoom:
+        type: number
+      totalSnack:
+        type: number
+      type:
         type: string
     type: object
   model.Snack:
