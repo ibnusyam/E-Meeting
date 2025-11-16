@@ -5,7 +5,11 @@ import (
 	"E-Meeting/model"
 	"database/sql"
 	"errors"
-	"net/url"
+	"fmt"
+	"io"
+	"mime/multipart"
+	"os"
+	"time"
 )
 
 type RoomService struct {
@@ -30,7 +34,7 @@ func (s *RoomService) GetAllRooms(name, roomType string, capacity, page, pageSiz
 	return rooms, err
 }
 
-func (s *RoomService) UpdateRoom(id int, req model.CreateRoomRequest) error {
+func (s *RoomService) UpdateRoom(id int, req model.UpdateRoomRequest, imageFile *multipart.FileHeader) error {
 
 	// Validate type
 	validTypes := map[string]bool{
@@ -48,26 +52,53 @@ func (s *RoomService) UpdateRoom(id int, req model.CreateRoomRequest) error {
 		return errors.New("capacity must be larger more than 0")
 	}
 
-	// validate image URL
-	_, err := url.ParseRequestURI(req.ImageURL)
+	// ambil data lama dulu
+	existing, err := s.Repo.GetRoomByID(id)
 	if err != nil {
-		return errors.New("url not found")
+		if err == sql.ErrNoRows {
+			return sql.ErrNoRows
+		}
+		return err
 	}
 
-	// mapping request → model
+	imagePath := existing.ImagesUrl // default gambar lama
+
 	room := model.Room{
 		Name:      req.Name,
 		Price:     req.PricePerHour,
-		ImagesUrl: req.ImageURL,
+		ImagesUrl: imagePath,
 		Capacity:  req.Capacity,
 		Type:      req.Type,
 	}
 
-	// call repository
+	// kalau user upload gambar baru
+	if req.ImageFile != nil {
+		src, err := req.ImageFile.Open()
+		if err != nil {
+			return err
+		}
+		defer src.Close()
+
+		fileName := fmt.Sprintf("%d_%s", time.Now().Unix(), req.ImageFile.Filename)
+		dstPath := "public/uploads/rooms/" + fileName
+
+		dst, err := os.Create(dstPath)
+		if err != nil {
+			return err
+		}
+		defer dst.Close()
+
+		if _, err := io.Copy(dst, src); err != nil {
+			return err
+		}
+
+		room.ImagesUrl = "/static/rooms/" + fileName
+	}
+
 	err = s.Repo.UpdateRoom(id, room)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return sql.ErrNoRows // supaya handler bisa return 404
+			return sql.ErrNoRows
 		}
 		return err
 	}

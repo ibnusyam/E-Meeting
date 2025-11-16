@@ -74,70 +74,65 @@ func (h *RoomHandler) GetAllRooms(c echo.Context) error {
 
 // UpdateRoom godoc
 // @Summary      Update Room
-// @Description  Update data room berdasarkan ID (Admin only)
+// @Description  Update room data by ID (Admin only)
 // @Tags         Rooms
-// @Accept       json
+// @Accept       multipart/form-data
 // @Produce      json
 // @Param        Authorization header string true "Bearer <access_token>"
 // @Param        id path int true "Room ID"
-// @Param        request body model.CreateRoomRequest true "Room update body"
-// @Success      200 {object} map[string]string "update room success"
-// @Failure      400 {object} map[string]string "room type is not valid / capacity must be larger more than 0"
-// @Failure      401 {object} map[string]string "unauthorized"
-// @Failure      404 {object} map[string]string "url not found"
-// @Failure      500 {object} map[string]string "internal server error"
+// @Param        name formData string true "Room name"
+// @Param        pricePerHour formData number true "Price per hour"
+// @Param        capacity formData int true "Capacity"
+// @Param        type formData string true "Room type (small, medium, large)"
+// @Param        image formData file false "Room image (PNG/JPG/JPEG, max 1MB)"
+// @Success      200 {object} map[string]string
+// @Failure      400 {object} map[string]string
+// @Failure      401 {object} map[string]string
+// @Failure      404 {object} map[string]string
+// @Failure      500 {object} map[string]string
+// @Security     BearerAuth
 // @Router       /rooms/{id} [put]
 func (h *RoomHandler) UpdateRoom(c echo.Context) error {
 
-	// role check
-	role := c.Get("role")
-	if role != "admin" {
-		return c.JSON(http.StatusUnauthorized, echo.Map{
-			"message": "unauthorized",
-		})
+	// check role
+	if c.Get("role") != "admin" {
+		return c.JSON(http.StatusUnauthorized, echo.Map{"message": "unauthorized"})
 	}
 
-	// parse room id
-	idParam := c.Param("id")
-	roomID, err := strconv.Atoi(idParam)
+	// room ID
+	roomID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return c.JSON(http.StatusNotFound, echo.Map{
-			"message": "url not found",
-		})
+		return c.JSON(http.StatusNotFound, echo.Map{"message": "url not found"})
 	}
 
-	// bind payload
-	var req model.CreateRoomRequest
-	if err := c.Bind(&req); err != nil {
-		return c.JSON(http.StatusBadRequest, echo.Map{
-			"message": "bad request",
-		})
+	// bind text fields
+	req := new(model.UpdateRoomRequest)
+	if err := c.Bind(req); err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{"message": "bad request"})
 	}
 
-	// service update
-	err = h.Service.UpdateRoom(roomID, req)
+	// optional image
+	file, _ := c.FormFile("image")
+
+	// call service (service yang handle validasi + upload image)
+	err = h.Service.UpdateRoom(roomID, *req, file)
 	if err != nil {
 
 		switch err.Error() {
-		case "room type is not valid", "capacity must be larger more than 0":
+		case "room type is not valid",
+			"capacity must be larger more than 0",
+			"image size must be less than 1MB",
+			"image must be png or jpg/jpeg":
 			return c.JSON(http.StatusBadRequest, echo.Map{"message": err.Error()})
 
-		case "url not found":
-			return c.JSON(http.StatusNotFound, echo.Map{"message": err.Error()})
-		}
-
-		if err == sql.ErrNoRows {
+		case "room not found":
 			return c.JSON(http.StatusNotFound, echo.Map{"message": "url not found"})
 		}
 
-		return c.JSON(http.StatusInternalServerError, echo.Map{
-			"message": "internal server error",
-		})
+		return c.JSON(http.StatusInternalServerError, echo.Map{"message": "internal server error"})
 	}
 
-	return c.JSON(http.StatusOK, echo.Map{
-		"message": "update room success",
-	})
+	return c.JSON(http.StatusOK, echo.Map{"message": "update room success"})
 }
 
 // DeleteRoom godoc

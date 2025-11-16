@@ -1,6 +1,9 @@
 package model
 
-import "time"
+import (
+	"mime/multipart"
+	"time"
+)
 
 type Room struct {
 	ID        int
@@ -43,4 +46,12 @@ type RoomRequest struct {
 	EndTime     time.Time `json:"endTime" example:"2025-10-17T14:00:00Z"`
 	Participant int       `json:"participant" example:"2"`
 	SnackID     int       `json:"snackID" example:"1"`
+}
+
+type UpdateRoomRequest struct {
+	Name         string                `form:"name"`
+	PricePerHour float64               `form:"pricePerHour"`
+	Capacity     int                   `form:"capacity"`
+	Type         string                `form:"type"`
+	ImageFile    *multipart.FileHeader `form:"image"`
 }
