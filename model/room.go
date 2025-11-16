@@ -13,6 +13,21 @@ type Room struct {
 	UpdatedAt time.Time
 }
 
+type RoomReservationDetail struct {
+	Name         string    `json:"name"`
+	PricePerHour float64   `json:"pricePerHour"`
+	ImageURL     string    `json:"imageURL"`
+	Capacity     int       `json:"capacity"`
+	Type         string    `json:"type"`
+	TotalSnack   float64   `json:"totalSnack"`
+	TotalRoom    float64   `json:"totalRoom"`
+	StartTime    time.Time `json:"startTime"`
+	EndTime      time.Time `json:"endTime"`
+	Duration     int       `json:"duration"`
+	Participant  int       `json:"participant"`
+	Snack        Snack     `json:"snack,omitempty"`
+}
+
 // RoomRequest untuk Swagger documentation
 type RoomRequest struct {
 	ID          int       `json:"id" example:"1"`

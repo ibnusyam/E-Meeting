@@ -23,6 +23,7 @@ type Handlers struct {
 	DashboardHandler               *handler.DashboardHandler
 	ReservationCalculationHandler  *handler.ReservationCalculationHandler
 	ReservationHistoryHandler      *handler.ReservationHistoryHandler
+	ReservationDetailHandler       *handler.ReservationDetailHandler
 	//tambahin buat handerl lain
 }
 
@@ -52,6 +53,7 @@ func SetupRoutes(e *echo.Echo, h *Handlers) {
 	authGroup.PATCH("/reservation/status/:id", h.ReservationHandler.UpdateReservationStatusHandler)
 	authGroup.GET("/reservation/calculation", h.ReservationCalculationHandler.GetReservationCalculation)
 	authGroup.GET("/reservation/history", h.ReservationHistoryHandler.GetHistory)
+	authGroup.GET("/reservation/:id", h.ReservationDetailHandler.GetReservationByID)
 
 	authGroup.POST("/uploads", h.UploadHandler.UploadFile)
 }
