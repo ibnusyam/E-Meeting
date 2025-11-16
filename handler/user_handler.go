@@ -19,7 +19,7 @@ func NewUserHandler(service service.UserService) *UserHandler {
 // Register godoc
 // @Summary      Register user baru
 // @Description  Register user baru
-// @Tags         Register
+// @Tags         Auth
 // @Accept       json
 // @Produce      json
 // @Param        request  body  model.RegisterRequest  true  "Register Request"

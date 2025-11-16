@@ -24,6 +24,9 @@ type Handlers struct {
 	ReservationCalculationHandler  *handler.ReservationCalculationHandler
 	ReservationHistoryHandler      *handler.ReservationHistoryHandler
 	ReservationDetailHandler       *handler.ReservationDetailHandler
+	PasswordResetHandler           *handler.PasswordResetHandler
+	PasswordResetbyIdHandler       *handler.PasswordResetHandler
+	DeleteRoomHandler              *handler.RoomHandler
 	//tambahin buat handerl lain
 }
 
@@ -36,6 +39,8 @@ func SetupRoutes(e *echo.Echo, h *Handlers) {
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 	e.POST("/login", h.LoginHandler.Login)
 	e.POST("/register", h.UserHandler.Register)
+	e.POST("/password/reset", h.PasswordResetHandler.ResetRequest)
+	e.PUT("/password/reset/:id", h.PasswordResetHandler.ResetPassword)
 
 	authGroup := e.Group("")
 	authGroup.Use(middleware.JWTMiddleware)
@@ -44,6 +49,7 @@ func SetupRoutes(e *echo.Echo, h *Handlers) {
 
 	authGroup.GET("/snacks", h.SnackHandler.GetAllSnacks)
 	authGroup.GET("/rooms", h.RoomHandler.GetAllRooms)
+	authGroup.DELETE("/rooms/:id", h.DeleteRoomHandler.DeleteRoom)
 
 	authGroup.GET("/users/:id", h.ProfileHandler.GetUserProfileByID)
 	authGroup.PATCH("/users/:id", h.ProfileHandler.UpdateUserHandler)
@@ -56,4 +62,5 @@ func SetupRoutes(e *echo.Echo, h *Handlers) {
 	authGroup.GET("/reservation/:id", h.ReservationDetailHandler.GetReservationByID)
 
 	authGroup.POST("/uploads", h.UploadHandler.UploadFile)
+	authGroup.GET("/dashboard", h.DashboardHandler.GetDashboard)
 }

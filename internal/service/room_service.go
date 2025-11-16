@@ -3,6 +3,8 @@ package service
 import (
 	"E-Meeting/internal/repository"
 	"E-Meeting/model"
+	"database/sql"
+	"errors"
 )
 
 type RoomService struct {
@@ -25,4 +27,29 @@ func (s *RoomService) GetAllRooms(name, roomType string, capacity, page, pageSiz
 	}
 
 	return rooms, err
+}
+
+// cek jika room sudah ada reservasi atau belum
+var ErrRoomUsed = errors.New("cannot delete rooms. room has reservation")
+
+func (s *RoomService) DeleteRoom(id int) error {
+	// cek apakah room sedang digunakan
+	used, err := s.Repo.IsRoomUsed(id)
+	if err != nil {
+		return err
+	}
+	if used {
+		return ErrRoomUsed
+	}
+
+	// delete room
+	err = s.Repo.DeleteRoom(id)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return sql.ErrNoRows
+		}
+		return err
+	}
+
+	return nil
 }
