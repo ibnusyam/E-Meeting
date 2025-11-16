@@ -37,7 +37,7 @@ func (s *PasswordResetService) GenerateResetToken(email string) (string, error) 
 		return "", errors.New("email not found")
 	}
 
-	token, err := utils.GenerateToken()
+	token, err := utils.GeneratePasswordResetToken(user.ID, user.Email)
 	if err != nil {
 		return "", err
 	}

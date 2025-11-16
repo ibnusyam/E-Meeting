@@ -16,18 +16,17 @@ func NewPasswordResetHandler(service *service.PasswordResetService) *PasswordRes
 	return &PasswordResetHandler{Service: service}
 }
 
-// POST /password/reset
 // Request password reset godoc
 // @Summary      Request password reset
 // @Description  Mengirim permintaan untuk mereset password dengan email
 // @Tags         Password Reset
 // @Accept       json
 // @Produce      json
-// @Param        request body map[string]string true "Email Request"
-// @Success      200  {object}  map[string]interface{}
-// @Failure      400  {object}  map[string]string
-// @Failure      500  {object}  map[string]string
-// @Router       /password/reset [post]
+// @Param        request body object{email=string} true "Email Request"
+// @Success      200  {object}  map[string]interface{} "Update Password success"
+// @Failure      404  {object}  map[string]string "email not found"
+// @Failure      500  {object}  map[string]string "Internal Server Error"
+// @Router       /password/reset/ [post]
 func (h *PasswordResetHandler) ResetRequest(c echo.Context) error {
 	var req struct {
 		Email string `json:"email"`
@@ -52,18 +51,17 @@ func (h *PasswordResetHandler) ResetRequest(c echo.Context) error {
 	})
 }
 
-// PUT /password/reset/:id
-// Reset password by id godoc
-// @Summary      Reset password by id
+// Reset password godoc
+// @Summary      Reset password
 // @Description  Mereset password menggunakan ID user
 // @Tags         Password Reset
 // @Accept       json
 // @Produce      json
-// @Param        id   path      int  true  "User ID"
-// @Param        request body map[string]string true "Password Reset Request"
-// @Success      200  {object}  map[string]string
-// @Failure      400  {object}  map[string]string
-// @Failure      500  {object}  map[string]string
+// @Param        id      path    int     true  "User ID"
+// @Param        request body    object{new_password=string,confirm_password=string} true "Password Reset Request"
+// @Success      200     {object}  map[string]string "Update Password success"
+// @Failure      400     {object}  map[string]string "password confirmation is not match"
+// @Failure      500     {object}  map[string]string "Internal Server Error"
 // @Router       /password/reset/{id} [put]
 func (h *PasswordResetHandler) ResetPassword(c echo.Context) error {
 	id, _ := strconv.Atoi(c.Param("id"))
