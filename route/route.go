@@ -27,6 +27,7 @@ type Handlers struct {
 	PasswordResetHandler           *handler.PasswordResetHandler
 	PasswordResetbyIdHandler       *handler.PasswordResetHandler
 	DeleteRoomHandler              *handler.RoomHandler
+	CreateRoomHandler              *handler.CreateRoomHandler
 	//tambahin buat handerl lain
 }
 
@@ -50,6 +51,7 @@ func SetupRoutes(e *echo.Echo, h *Handlers) {
 	authGroup.GET("/snacks", h.SnackHandler.GetAllSnacks)
 	authGroup.GET("/rooms", h.RoomHandler.GetAllRooms)
 	authGroup.DELETE("/rooms/:id", h.DeleteRoomHandler.DeleteRoom)
+	authGroup.POST("/rooms", h.CreateRoomHandler.CreateRoom)
 
 	authGroup.GET("/users/:id", h.ProfileHandler.GetUserProfileByID)
 	authGroup.PATCH("/users/:id", h.ProfileHandler.UpdateUserHandler)

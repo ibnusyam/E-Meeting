@@ -11,6 +11,24 @@ definitions:
       username:
         type: string
     type: object
+  model.CreateRoomRequest:
+    properties:
+      capacity:
+        example: 10
+        type: integer
+      imageURL:
+        example: http://domain.com/temp/profile.png
+        type: string
+      name:
+        example: Meeting Room A
+        type: string
+      pricePerHour:
+        example: 150000
+        type: number
+      type:
+        example: small
+        type: string
+    type: object
   model.ErrorResponse:
     properties:
       message:
@@ -504,6 +522,46 @@ paths:
       summary: Register user baru
       tags:
       - Auth
+  /reservation/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get detailed reservation information by reservation ID. Admin can
+        view all reservations, customers can only view their own reservations.
+      parameters:
+      - description: Reservation ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ReservationResponse'
+        "400":
+          description: Invalid reservation ID
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "401":
+          description: Unauthorized - Invalid token or insufficient permissions
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "404":
+          description: Reservation not found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get reservation by ID
+      tags:
+      - Reservations
   /reservation/calculation:
     get:
       consumes:
@@ -748,6 +806,61 @@ paths:
             additionalProperties: true
             type: object
       summary: Mendapatkan semua data room
+      tags:
+      - Rooms
+    post:
+      consumes:
+      - application/json
+      description: Create a new meeting room (Admin only)
+      parameters:
+      - description: Bearer <access_token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Room request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateRoomRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request - room type is not valid / capacity must be larger
+            more than 0
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found - url not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create Room
       tags:
       - Rooms
   /rooms/:id/reservation:
