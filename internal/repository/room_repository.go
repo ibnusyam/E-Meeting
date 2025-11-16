@@ -79,3 +79,34 @@ func (repo *RoomRepository) GetAllRoom(name, roomType string, capacity, page, pa
 	}
 	return rooms, nil
 }
+
+// Cek apakah room sedang dipakai
+func (r *RoomRepository) IsRoomUsed(roomID int) (bool, error) {
+	var count int
+	query := "SELECT COUNT(*) FROM reservation_details WHERE room_id = $1"
+	err := r.DB.QueryRow(query, roomID).Scan(&count)
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
+}
+
+// Hapus room
+func (r *RoomRepository) DeleteRoom(roomID int) error {
+	query := "DELETE FROM rooms WHERE id = $1"
+	result, err := r.DB.Exec(query, roomID)
+	if err != nil {
+		return err
+	}
+
+	rows, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rows == 0 {
+		return sql.ErrNoRows
+	}
+
+	return nil
+}

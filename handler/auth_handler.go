@@ -20,6 +20,7 @@ type LoginRequest struct {
 	Password string `json:"password"`
 }
 
+// Login godoc
 // @Summary Login
 // @Description Authenticate user and return access and refresh tokens
 // @Tags Auth

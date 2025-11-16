@@ -2,6 +2,7 @@ package handler
 
 import (
 	"E-Meeting/internal/service"
+	"database/sql"
 	"net/http"
 	"strconv"
 
@@ -68,4 +69,50 @@ func (h *RoomHandler) GetAllRooms(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, rooms)
+}
+
+// DeleteRoom godoc
+// @Summary      Menghapus room berdasarkan ID
+// @Description  Menghapus room dari sistem menggunakan ID room
+// @Tags         Rooms
+// @Accept       json
+// @Produce      json
+// @Param        Authorization  header  string  true   "Bearer <access_token>"
+// @Param        id   path      int  true  "Room ID"
+// @Success      200  {object}  map[string]string
+// @Failure      400  {object}  map[string]string
+// @Failure      404  {object}  map[string]string
+// @Failure      500  {object}  map[string]string
+// @Router       /rooms/{id} [delete]
+// DeleteRoom handler
+func (h *RoomHandler) DeleteRoom(c echo.Context) error {
+	idParam := c.Param("id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		return c.JSON(http.StatusNotFound, echo.Map{
+			"message": "url not found",
+		})
+	}
+
+	err = h.Service.DeleteRoom(id)
+	if err != nil {
+		switch err {
+		case service.ErrRoomUsed:
+			return c.JSON(http.StatusBadRequest, echo.Map{
+				"message": "cannot delete rooms. room has reservation",
+			})
+		case sql.ErrNoRows:
+			return c.JSON(http.StatusNotFound, echo.Map{
+				"message": "url not found",
+			})
+		default:
+			return c.JSON(http.StatusInternalServerError, echo.Map{
+				"message": "internal server error",
+			})
+		}
+	}
+
+	return c.JSON(http.StatusOK, echo.Map{
+		"message": "delete room success",
+	})
 }

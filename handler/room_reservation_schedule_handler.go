@@ -16,6 +16,20 @@ func NewRoomReservationScheduleHandler(service *service.RoomReservationScheduleS
 	return &RoomReservationScheduleHandler{Service: service}
 }
 
+// GetRoomReservationSchedules godoc
+// @Summary      Mendapatkan jadwal reservasi room
+// @Description  Mengambil jadwal reservasi untuk room tertentu berdasarkan tanggal mulai
+// @Tags         Room Reservation Schedules
+// @Accept       json
+// @Produce      json
+// @Param        Authorization  header  string  true   "Bearer <access_token>"
+// @Param        id_room     path     int     true  "ID Room"
+// @Param        startDate   query     string  true  "Tanggal mulai dalam format YYYY-MM-DD"
+// @Success      200  {object}  map[string]interface{}
+// @Failure      400  {object}  map[string]string
+// @Failure      404  {object}  map[string]string
+// @Failure      500  {object}  map[string]string
+// @Router       /rooms/:id/reservation [get]
 func (h *RoomReservationScheduleHandler) GetRoomReservationSchedules(c echo.Context) error {
 	roomID, err := strconv.Atoi(c.Param("id_room"))
 	if err != nil {
