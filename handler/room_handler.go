@@ -2,6 +2,8 @@ package handler
 
 import (
 	"E-Meeting/internal/service"
+	"E-Meeting/model"
+	"database/sql"
 	"net/http"
 	"strconv"
 
@@ -68,4 +70,113 @@ func (h *RoomHandler) GetAllRooms(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, rooms)
+}
+
+// UpdateRoom godoc
+// @Summary      Update Room
+// @Description  Update room data by ID (Admin only)
+// @Tags         Rooms
+// @Accept       multipart/form-data
+// @Produce      json
+// @Param        Authorization header string true "Bearer <access_token>"
+// @Param        id path int true "Room ID"
+// @Param        name formData string true "Room name"
+// @Param        pricePerHour formData number true "Price per hour"
+// @Param        capacity formData int true "Capacity"
+// @Param        type formData string true "Room type (small, medium, large)"
+// @Param        image formData file false "Room image (PNG/JPG/JPEG, max 1MB)"
+// @Success      200 {object} map[string]string
+// @Failure      400 {object} map[string]string
+// @Failure      401 {object} map[string]string
+// @Failure      404 {object} map[string]string
+// @Failure      500 {object} map[string]string
+// @Security     BearerAuth
+// @Router       /rooms/{id} [put]
+func (h *RoomHandler) UpdateRoom(c echo.Context) error {
+
+	// check role
+	if c.Get("role") != "admin" {
+		return c.JSON(http.StatusUnauthorized, echo.Map{"message": "unauthorized"})
+	}
+
+	// room ID
+	roomID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return c.JSON(http.StatusNotFound, echo.Map{"message": "url not found"})
+	}
+
+	// bind text fields
+	req := new(model.UpdateRoomRequest)
+	if err := c.Bind(req); err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{"message": "bad request"})
+	}
+
+	// optional image
+	file, _ := c.FormFile("image")
+
+	// call service (service yang handle validasi + upload image)
+	err = h.Service.UpdateRoom(roomID, *req, file)
+	if err != nil {
+
+		switch err.Error() {
+		case "room type is not valid",
+			"capacity must be larger more than 0",
+			"image size must be less than 1MB",
+			"image must be png or jpg/jpeg":
+			return c.JSON(http.StatusBadRequest, echo.Map{"message": err.Error()})
+
+		case "room not found":
+			return c.JSON(http.StatusNotFound, echo.Map{"message": "url not found"})
+		}
+
+		return c.JSON(http.StatusInternalServerError, echo.Map{"message": "internal server error"})
+	}
+
+	return c.JSON(http.StatusOK, echo.Map{"message": "update room success"})
+}
+
+// DeleteRoom godoc
+// @Summary      Menghapus room berdasarkan ID
+// @Description  Menghapus room dari sistem menggunakan ID room
+// @Tags         Rooms
+// @Accept       json
+// @Produce      json
+// @Param        Authorization  header  string  true   "Bearer <access_token>"
+// @Param        id   path      int  true  "Room ID"
+// @Success      200  {object}  map[string]string
+// @Failure      400  {object}  map[string]string
+// @Failure      404  {object}  map[string]string
+// @Failure      500  {object}  map[string]string
+// @Router       /rooms/{id} [delete]
+// DeleteRoom handler
+func (h *RoomHandler) DeleteRoom(c echo.Context) error {
+	idParam := c.Param("id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		return c.JSON(http.StatusNotFound, echo.Map{
+			"message": "url not found",
+		})
+	}
+
+	err = h.Service.DeleteRoom(id)
+	if err != nil {
+		switch err {
+		case service.ErrRoomUsed:
+			return c.JSON(http.StatusBadRequest, echo.Map{
+				"message": "cannot delete rooms. room has reservation",
+			})
+		case sql.ErrNoRows:
+			return c.JSON(http.StatusNotFound, echo.Map{
+				"message": "url not found",
+			})
+		default:
+			return c.JSON(http.StatusInternalServerError, echo.Map{
+				"message": "internal server error",
+			})
+		}
+	}
+
+	return c.JSON(http.StatusOK, echo.Map{
+		"message": "delete room success",
+	})
 }

@@ -79,3 +79,86 @@ func (repo *RoomRepository) GetAllRoom(name, roomType string, capacity, page, pa
 	}
 	return rooms, nil
 }
+
+func (r *RoomRepository) GetRoomByID(id int) (*model.Room, error) {
+	query := `SELECT id, name, price, images_url, capacity, type FROM rooms WHERE id = $1`
+
+	row := r.DB.QueryRow(query, id)
+
+	var room model.Room
+	err := row.Scan(&room.ID, &room.Name, &room.Price, &room.ImagesUrl, &room.Capacity, &room.Type)
+	if err != nil {
+		return nil, err
+	}
+
+	return &room, nil
+}
+
+// Update room
+func (r *RoomRepository) UpdateRoom(roomID int, room model.Room) error {
+	query := `
+		UPDATE rooms SET 
+			name = $1,
+			capacity = $2,
+			price = $3,
+			type = $4,
+			images_url = $5,
+			updated_at = NOW()
+		WHERE id = $6
+	`
+
+	result, err := r.DB.Exec(query,
+		room.Name,
+		room.Capacity,
+		room.Price,
+		room.Type,
+		room.ImagesUrl,
+		roomID,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	affected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if affected == 0 {
+		return sql.ErrNoRows
+	}
+
+	return nil
+}
+
+// Cek apakah room sedang dipakai
+func (r *RoomRepository) IsRoomUsed(roomID int) (bool, error) {
+	var count int
+	query := "SELECT COUNT(*) FROM reservation_details WHERE room_id = $1"
+	err := r.DB.QueryRow(query, roomID).Scan(&count)
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
+}
+
+// Hapus room
+func (r *RoomRepository) DeleteRoom(roomID int) error {
+	query := "DELETE FROM rooms WHERE id = $1"
+	result, err := r.DB.Exec(query, roomID)
+	if err != nil {
+		return err
+	}
+
+	rows, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rows == 0 {
+		return sql.ErrNoRows
+	}
+
+	return nil
+}

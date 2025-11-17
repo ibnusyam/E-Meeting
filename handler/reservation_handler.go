@@ -28,6 +28,7 @@ func NewReservationHandler(s *service.ReservationService) *ReservationHandler {
 // @Tags Reservations
 // @Accept json
 // @Produce json
+// @Param Authorization header string true "Bearer <JWT Token>"
 // @Param request body model.ReservationRequest true "Reservation Request"
 // @Success 201 {object} map[string]interface{} "reservation created successfully"
 // @Failure 400 {object} map[string]interface{} "invalid request / room not found / room has been booked / invalid userID"

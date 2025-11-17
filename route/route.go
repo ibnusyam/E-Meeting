@@ -22,6 +22,13 @@ type Handlers struct {
 	UploadHandler                  *handler.UploadHandler
 	DashboardHandler               *handler.DashboardHandler
 	ReservationCalculationHandler  *handler.ReservationCalculationHandler
+	ReservationHistoryHandler      *handler.ReservationHistoryHandler
+	ReservationDetailHandler       *handler.ReservationDetailHandler
+	PasswordResetHandler           *handler.PasswordResetHandler
+	PasswordResetbyIdHandler       *handler.PasswordResetHandler
+	DeleteRoomHandler              *handler.RoomHandler
+	CreateRoomHandler              *handler.CreateRoomHandler
+	UpdateRoomHandler              *handler.RoomHandler
 	//tambahin buat handerl lain
 }
 
@@ -32,28 +39,32 @@ func SetupRoutes(e *echo.Echo, h *Handlers) {
 	})
 
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
-
-	e.GET("/snacks", h.SnackHandler.GetAllSnacks)
-
-	e.GET("/users/:id", h.ProfileHandler.GetUserProfileByID)
-
-	e.POST("/register", h.UserHandler.Register)
-	e.POST("/reservations", h.ReservationHandler.CreateReservation)
-	e.PATCH("/reservation/status/:id", h.ReservationHandler.UpdateReservationStatusHandler)
-
-	e.GET("/rooms", h.RoomHandler.GetAllRooms)
-
-	e.GET("/profile/:id", h.ProfileHandler.GetUserProfileByID)
-	e.GET("/rooms", h.RoomHandler.GetAllRooms)
-	e.GET("/reservation/calculation", h.ReservationCalculationHandler.GetReservationCalculation)
-
 	e.POST("/login", h.LoginHandler.Login)
+	e.POST("/register", h.UserHandler.Register)
+	e.POST("/password/reset", h.PasswordResetHandler.ResetRequest)
+	e.PUT("/password/reset/:id", h.PasswordResetHandler.ResetPassword)
 
-	e.PATCH("/users/:id", h.ProfileHandler.UpdateUserHandler)
-
-	e.POST("/uploads", h.UploadHandler.UploadFile)
-
-	authGroup := e.Group("/rooms")
+	authGroup := e.Group("")
 	authGroup.Use(middleware.JWTMiddleware)
-	authGroup.GET("/:id_room/reservation", h.RoomReservationScheduleHandler.GetRoomReservationSchedules)
+
+	authGroup.GET("/rooms/:id_room/reservation", h.RoomReservationScheduleHandler.GetRoomReservationSchedules)
+
+	authGroup.GET("/snacks", h.SnackHandler.GetAllSnacks)
+	authGroup.GET("/rooms", h.RoomHandler.GetAllRooms)
+	authGroup.DELETE("/rooms/:id", h.DeleteRoomHandler.DeleteRoom)
+	authGroup.POST("/rooms", h.CreateRoomHandler.CreateRoom)
+	authGroup.PUT("/rooms/:id", h.UpdateRoomHandler.UpdateRoom)
+
+	authGroup.GET("/users/:id", h.ProfileHandler.GetUserProfileByID)
+	authGroup.PATCH("/users/:id", h.ProfileHandler.UpdateUserHandler)
+	authGroup.GET("/profile/:id", h.ProfileHandler.GetUserProfileByID)
+
+	authGroup.POST("/reservations", h.ReservationHandler.CreateReservation)
+	authGroup.PATCH("/reservation/status/:id", h.ReservationHandler.UpdateReservationStatusHandler)
+	authGroup.GET("/reservation/calculation", h.ReservationCalculationHandler.GetReservationCalculation)
+	authGroup.GET("/reservation/history", h.ReservationHistoryHandler.GetHistory)
+	authGroup.GET("/reservation/:id", h.ReservationDetailHandler.GetReservationByID)
+
+	authGroup.POST("/uploads", h.UploadHandler.UploadFile)
+	authGroup.GET("/dashboard", h.DashboardHandler.GetDashboard)
 }

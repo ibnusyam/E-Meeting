@@ -95,6 +95,14 @@ func main() {
 	reservationCalculationService := service.NewReservationCalculationService(reservationCalculationRepo)
 	reservationCalculationHandler := handler.NewReservationCalculationHandler(reservationCalculationService)
 
+	reservationHistoryRepo := repository.NewReservationHistoryRepository(db)
+	reservationHistoryService := service.NewReservationHistoryService(reservationHistoryRepo)
+	reservationHistoryHandler := handler.NewReservationHistoryHandler(reservationHistoryService)
+
+	reservationDetailRepo := repository.NewReservationDetailRepository(db)
+	reservationDetailService := service.NewReservationDetailService(reservationDetailRepo)
+	reservationDetailHandler := handler.NewReservationDetailHandler(reservationDetailService)
+
 	const tempDir = "public/temp"
 	const uploadDir = "public/uploads"
 	const baseURL = "http://localhost:8080/assets"
@@ -106,6 +114,26 @@ func main() {
 	dashboardRepo := repository.NewDashboardRepository(db)
 	dashboardService := service.NewDashboardService(dashboardRepo)
 	dashboardHandler := handler.NewDashboardHandler(dashboardService)
+
+	passwordResetRepo := repository.NewPasswordResetRepository(db)
+	passwordResetService := service.NewPasswordResetService(passwordResetRepo)
+	passwordResetHandler := handler.NewPasswordResetHandler(passwordResetService)
+
+	passwordResetbyIdRepo := repository.NewPasswordResetRepository(db)
+	passwordResetbyIdService := service.NewPasswordResetService(passwordResetbyIdRepo)
+	passwordResetbyIdHandler := handler.NewPasswordResetHandler(passwordResetbyIdService)
+
+	deleteRoomRepo := repository.NewRoomRepository(db)
+	deleteRoomService := service.NewRoomService(deleteRoomRepo)
+	deleteRoomHandler := handler.NewRoomHandler(deleteRoomService)
+
+	createRoomRepo := repository.NewRoomCreateRepository(db)
+	createRoomService := service.NewRoomCreateService(createRoomRepo)
+	createRoomHandler := handler.NewRoomCreateHandler(createRoomService)
+
+	updateRoomRepo := repository.NewRoomRepository(db)
+	updateRoomService := service.NewRoomService(updateRoomRepo)
+	updateRoomHandler := handler.NewRoomHandler(updateRoomService)
 
 	//testing
 	allHandlers := &route.Handlers{
@@ -119,6 +147,13 @@ func main() {
 		UploadHandler:                  uploadHandler,
 		DashboardHandler:               dashboardHandler,
 		ReservationCalculationHandler:  reservationCalculationHandler,
+		ReservationHistoryHandler:      reservationHistoryHandler,
+		ReservationDetailHandler:       reservationDetailHandler,
+		PasswordResetHandler:           passwordResetHandler,
+		PasswordResetbyIdHandler:       passwordResetbyIdHandler,
+		DeleteRoomHandler:              deleteRoomHandler,
+		CreateRoomHandler:              createRoomHandler,
+		UpdateRoomHandler:              updateRoomHandler,
 		// handler lain di sini
 	}
 

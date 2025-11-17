@@ -4,6 +4,27 @@ definitions:
       message:
         type: string
     type: object
+  handler.LoginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  model.ErrorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  model.PersonalData:
+    properties:
+      company:
+        type: string
+      name:
+        type: string
+      phoneNumber:
+        type: string
+    type: object
   model.ProfileUser:
     properties:
       createdAt:
@@ -46,12 +67,6 @@ definitions:
         items:
           $ref: '#/definitions/model.ReservationCalculationRooms'
         type: array
-      subTotalRoom:
-        type: number
-      subTotalSnack:
-        type: number
-      total:
-        type: number
     type: object
   model.ReservationCalculationPersonalData:
     properties:
@@ -116,6 +131,82 @@ definitions:
         description: uncomment jika dipakai
         type: string
     type: object
+  model.ReservationData:
+    properties:
+      personalData:
+        $ref: '#/definitions/model.PersonalData'
+      rooms:
+        items:
+          $ref: '#/definitions/model.RoomReservationDetail'
+        type: array
+      subTotalRoom:
+        type: number
+      subTotalSnack:
+        type: number
+      total:
+        type: number
+    type: object
+  model.ReservationHistory:
+    properties:
+      company:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      phoneNumber:
+        type: number
+      rooms:
+        items:
+          $ref: '#/definitions/model.ReservationHistoryRoom'
+        type: array
+      status:
+        type: string
+      subTotalRoom:
+        type: number
+      subTotalSnack:
+        type: number
+      total:
+        type: number
+      updatedAt:
+        type: string
+      userId:
+        type: integer
+    type: object
+  model.ReservationHistoryResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/model.ReservationHistory'
+        type: array
+      message:
+        type: string
+      page:
+        type: integer
+      pageSize:
+        type: integer
+      totalData:
+        type: integer
+      totalPage:
+        type: integer
+    type: object
+  model.ReservationHistoryRoom:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      price:
+        type: number
+      totalRoom:
+        type: number
+      totalSnack:
+        type: number
+      type:
+        type: string
+    type: object
   model.ReservationRequest:
     properties:
       company:
@@ -138,6 +229,13 @@ definitions:
         example: "1"
         type: string
     type: object
+  model.ReservationResponse:
+    properties:
+      data:
+        $ref: '#/definitions/model.ReservationData'
+      message:
+        type: string
+    type: object
   model.RoomRequest:
     properties:
       endTime:
@@ -154,6 +252,33 @@ definitions:
         type: integer
       startTime:
         example: "2025-10-17T12:00:00Z"
+        type: string
+    type: object
+  model.RoomReservationDetail:
+    properties:
+      capacity:
+        type: integer
+      duration:
+        type: integer
+      endTime:
+        type: string
+      imageURL:
+        type: string
+      name:
+        type: string
+      participant:
+        type: integer
+      pricePerHour:
+        type: number
+      snack:
+        $ref: '#/definitions/model.Snack'
+      startTime:
+        type: string
+      totalRoom:
+        type: number
+      totalSnack:
+        type: number
+      type:
         type: string
     type: object
   model.Snack:
@@ -175,6 +300,163 @@ info:
   title: E-Meeting API
   version: "1.0"
 paths:
+  /dashboard:
+    get:
+      consumes:
+      - application/json
+      description: Mengambil data statistik untuk dashboard berdasarkan rentang tanggal
+      parameters:
+      - description: Bearer <access_token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Tanggal mulai dalam format YYYY-MM-DD
+        in: query
+        name: startDate
+        required: true
+        type: string
+      - description: Tanggal akhir dalam format YYYY-MM-DD
+        in: query
+        name: endDate
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Mendapatkan data dashboard
+      tags:
+      - Dashboard
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate user and return access and refresh tokens
+      parameters:
+      - description: Login Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Login Success
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Login Failed
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Login
+      tags:
+      - Auth
+  /password/reset/:
+    post:
+      consumes:
+      - application/json
+      description: Mengirim permintaan untuk mereset password dengan email
+      parameters:
+      - description: Email Request
+        in: body
+        name: request
+        required: true
+        schema:
+          properties:
+            email:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Update Password success
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: email not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Request password reset
+      tags:
+      - Password Reset
+  /password/reset/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Mereset password menggunakan ID user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Password Reset Request
+        in: body
+        name: request
+        required: true
+        schema:
+          properties:
+            confirm_password:
+              type: string
+            new_password:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Update Password success
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: password confirmation is not match
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Reset password
+      tags:
+      - Password Reset
   /profile/:id:
     get:
       consumes:
@@ -224,7 +506,47 @@ paths:
             type: object
       summary: Register user baru
       tags:
-      - Register
+      - Auth
+  /reservation/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get detailed reservation information by reservation ID. Admin can
+        view all reservations, customers can only view their own reservations.
+      parameters:
+      - description: Reservation ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ReservationResponse'
+        "400":
+          description: Invalid reservation ID
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "401":
+          description: Unauthorized - Invalid token or insufficient permissions
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "404":
+          description: Reservation not found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get reservation by ID
+      tags:
+      - Reservations
   /reservation/calculation:
     get:
       consumes:
@@ -232,45 +554,62 @@ paths:
       description: Hitung total biaya reservasi berdasarkan room, snack, waktu, dan
         peserta
       parameters:
+      - description: Bearer <access_token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: ID ruangan
+        example: 1
         in: query
         name: room_id
         required: true
         type: integer
       - description: ID snack (optional)
+        example: 2
         in: query
         name: snack_id
         type: integer
       - description: Waktu mulai (format RFC3339)
+        example: "2023-01-01T10:00:00Z"
         in: query
         name: startTime
         required: true
         type: string
       - description: Waktu selesai (format RFC3339)
+        example: "2023-01-01T12:00:00Z"
         in: query
         name: endTime
         required: true
         type: string
       - description: Jumlah peserta
+        example: 10
         in: query
         name: participant
         required: true
         type: integer
       - description: ID user (optional)
+        example: 123
         in: query
         name: user_id
         type: integer
       - description: Nama pemesan
+        example: John Doe
         in: query
         name: name
+        required: true
         type: string
       - description: Nomor telepon pemesan
+        example: "+628123456789"
         in: query
         name: phoneNumber
+        required: true
         type: string
       - description: Nama perusahaan
+        example: Example Corp
         in: query
         name: company
+        required: true
         type: string
       produces:
       - application/json
@@ -298,12 +637,90 @@ paths:
       summary: Reservation Calculation
       tags:
       - Reservation
+  /reservation/history:
+    get:
+      consumes:
+      - application/json
+      description: Get reservation history with filters and pagination
+      parameters:
+      - description: Bearer <access_token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Start date filter (YYYY-MM-DD)
+        in: query
+        name: startDate
+        type: string
+      - description: End date filter (YYYY-MM-DD)
+        in: query
+        name: endDate
+        type: string
+      - description: Room type filter (small, medium, large, hall)
+        in: query
+        name: type
+        type: string
+      - description: Status filter
+        in: query
+        name: status
+        type: string
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Page size
+        in: query
+        name: pageSize
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ReservationHistoryResponse'
+        "400":
+          description: Bad Request - room type is not valid
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found - url not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get reservation history
+      tags:
+      - Reservation
   /reservations:
     post:
       consumes:
       - application/json
       description: Create a new meeting room reservation with room details and snacks
       parameters:
+      - description: Bearer <JWT Token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: Reservation Request
         in: body
         name: request
@@ -374,6 +791,247 @@ paths:
             additionalProperties: true
             type: object
       summary: Mendapatkan semua data room
+      tags:
+      - Rooms
+    post:
+      consumes:
+      - multipart/form-data
+      description: Create a new meeting room (Admin only)
+      parameters:
+      - description: Bearer <access_token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Room name
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: Price per hour
+        in: formData
+        name: pricePerHour
+        required: true
+        type: number
+      - description: Capacity
+        in: formData
+        name: capacity
+        required: true
+        type: integer
+      - description: Room type (small, medium, large)
+        in: formData
+        name: type
+        required: true
+        type: string
+      - description: Image (PNG/JPG/JPEG) max 1MB
+        in: formData
+        name: image
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create Room
+      tags:
+      - Rooms
+  /rooms/:id/reservation:
+    get:
+      consumes:
+      - application/json
+      description: Mengambil jadwal reservasi untuk room tertentu berdasarkan tanggal
+        mulai
+      parameters:
+      - description: Bearer <access_token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: ID Room
+        in: path
+        name: id_room
+        required: true
+        type: integer
+      - description: Tanggal mulai dalam format YYYY-MM-DD
+        in: query
+        name: startDate
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Mendapatkan jadwal reservasi room
+      tags:
+      - Room Reservation Schedules
+  /rooms/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Menghapus room dari sistem menggunakan ID room
+      parameters:
+      - description: Bearer <access_token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Room ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Menghapus room berdasarkan ID
+      tags:
+      - Rooms
+    put:
+      consumes:
+      - multipart/form-data
+      description: Update room data by ID (Admin only)
+      parameters:
+      - description: Bearer <access_token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Room ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Room name
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: Price per hour
+        in: formData
+        name: pricePerHour
+        required: true
+        type: number
+      - description: Capacity
+        in: formData
+        name: capacity
+        required: true
+        type: integer
+      - description: Room type (small, medium, large)
+        in: formData
+        name: type
+        required: true
+        type: string
+      - description: Room image (PNG/JPG/JPEG, max 1MB)
+        in: formData
+        name: image
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update Room
       tags:
       - Rooms
   /snacks:
