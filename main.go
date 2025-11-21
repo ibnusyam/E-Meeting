@@ -168,7 +168,7 @@ func main() {
 	log.Println("🚀 Server berjalan di http://localhost:8080")
 	log.Println("📚 Dokumentasi Swagger tersedia di http://localhost:8080/swagger/index.html")
 
-	if err := e.Start(":8080"); err != nil {
-		log.Fatalf("Gagal menjalankan server: %v", err)
-	}
+		if err := e.Start("0.0.0.0:8080"); err != nil {
+			log.Fatalf("Gagal menjalankan server: %v", err)
+		}
 }

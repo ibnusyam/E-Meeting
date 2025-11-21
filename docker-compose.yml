@@ -33,7 +33,9 @@ services:
       - DB_NAME=e-meeting
       - DB_PASSWORD=
     ports:
-      - "8081:8080"
+      - "8090:8080"
+    volumes:
+      - ./.env:/app/.env
     networks:
       - skbe5-app-network
     restart: unless-stopped
