@@ -22,7 +22,6 @@ import (
 // @title E-Meeting API
 // @version 1.0
 // @description Ini adalah API server untuk aplikasi E-Meeting.
-// @host localhost:8080
 // @BasePath
 // @BasePath
 func main() {
@@ -169,7 +168,7 @@ func main() {
 	log.Println("🚀 Server berjalan di http://localhost:8080")
 	log.Println("📚 Dokumentasi Swagger tersedia di http://localhost:8080/swagger/index.html")
 
-	if err := e.Start(":8080"); err != nil {
-		log.Fatalf("Gagal menjalankan server: %v", err)
-	}
+		if err := e.Start("0.0.0.0:8080"); err != nil {
+			log.Fatalf("Gagal menjalankan server: %v", err)
+		}
 }

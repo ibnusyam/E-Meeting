@@ -294,7 +294,6 @@ definitions:
       unit:
         type: integer
     type: object
-host: localhost:8080
 info:
   contact: {}
   description: Ini adalah API server untuk aplikasi E-Meeting.

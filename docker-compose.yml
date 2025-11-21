@@ -1,0 +1,63 @@
+services:
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: skbe5-e-meeting-migrate
+    entrypoint:
+      [
+        "migrate",
+        "-path",
+        "migration",
+        "-database",
+        "postgres://e_meeting:@db:5432/e-meeting?sslmode=disable",
+        "up",
+      ]
+    depends_on:
+      - db
+    networks:
+      - skbe5-app-network
+    restart: "no" # hanya jalan sekali
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: e-meeting-api
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=e_meeting
+      - DB_NAME=e-meeting
+      - DB_PASSWORD=
+    ports:
+      - "8090:8080"
+    volumes:
+      - ./.env:/app/.env
+    networks:
+      - skbe5-app-network
+    restart: unless-stopped
+
+  db:
+    image: postgres:15-alpine
+    container_name: skbe5_postgres_db
+    environment:
+      - POSTGRES_USER=e_meeting
+      - POSTGRES_DB=e-meeting
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5435:5432"
+    networks:
+      - skbe5-app-network
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+
+networks:
+  skbe5-app-network:
+    name: skbe5-app-network
